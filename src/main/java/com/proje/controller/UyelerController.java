@@ -1,60 +1,99 @@
 package com.proje.controller;
 
 import com.proje.dao.UserDAO;
+import com.proje.interfaces.IAramaKriteri; // Interface import edildi
 import com.proje.model.BirimUyesi;
+import com.proje.utility.AramaMotoru; // Generic sınıf import edildi
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent; // Klavye olaylarını yakalamak için
 
+import java.util.List;
 import java.util.Optional;
 
 public class UyelerController {
 
-    // FXML dosyasındaki fx:id'lerle birebir aynı olmalı
     @FXML private TableView<BirimUyesi> tabloUyeler;
     @FXML private TableColumn<BirimUyesi, String> colNo;
     @FXML private TableColumn<BirimUyesi, String> colAd;
     @FXML private TableColumn<BirimUyesi, String> colRol;
     @FXML private TableColumn<BirimUyesi, Integer> colBirim;
 
+    // --- YENİ: Arama Kutusu (FXML ile bağladık) ---
+    @FXML private TextField txtArama;
+
     private UserDAO userDAO = new UserDAO();
-    private ObservableList<BirimUyesi> uyeListesi = FXCollections.observableArrayList();
+
+    // 1. Ekranda Görünen Liste (Filtrelenmiş halini tutar)
+    private ObservableList<BirimUyesi> gosterilenListe = FXCollections.observableArrayList();
+
+    // 2. Ana Veri Listesi (Veritabanındaki her şeyi tutar, arama yaparken buradan bakarız)
+    private List<BirimUyesi> anaVeriListesi;
+
+    // --- PDF Madde 5.1: Generic Sınıf Kullanımı ---
+    private AramaMotoru<BirimUyesi> aramaMotoru = new AramaMotoru<>();
 
     @FXML
     public void initialize() {
-        // 1. Tablo Sütunlarını Model Verileriyle Eşleştir
-        // Parantez içindekiler BirimUyesi sınıfındaki değişken isimleri değil, getter metodunun sonudur.
-        // getOgrenciNo() -> "ogrenciNo"
+        // Tablo Sütun Ayarları
         colNo.setCellValueFactory(new PropertyValueFactory<>("ogrenciNo"));
         colAd.setCellValueFactory(new PropertyValueFactory<>("adSoyad"));
         colRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
         colBirim.setCellValueFactory(new PropertyValueFactory<>("birimId"));
 
-        // 2. Listeyi Tabloya Bağla
-        tabloUyeler.setItems(uyeListesi);
+        // Tabloyu observable listeye bağla
+        tabloUyeler.setItems(gosterilenListe);
 
-        // 3. Verileri Çek ve Göster
+        // Verileri ilk kez çek
         verileriGetir();
     }
 
     private void verileriGetir() {
-        uyeListesi.clear();
-        uyeListesi.addAll(userDAO.getTumKullanicilar());
+        // Veritabanından her şeyi çekip "anaVeriListesi"ne atıyoruz (Yedek gibi düşün)
+        anaVeriListesi = userDAO.getTumKullanicilar();
+
+        // Ekrana da aynısını yansıtıyoruz (Başlangıçta hepsi görünür)
+        gosterilenListe.clear();
+        gosterilenListe.addAll(anaVeriListesi);
     }
 
-    // "Listeyi Yenile" butonu için
+    // --- YENİ: ARAMA METODU (FXML'de onKeyReleased="#aramaYap") ---
+    @FXML
+    void aramaYap(KeyEvent event) {
+        String arananMetin = txtArama.getText();
+
+        // PDF Madde 4.3 (Interface) ve Lambda Kullanımı:
+        // Arama kuralını burada belirliyoruz.
+        IAramaKriteri<BirimUyesi> kriter = (uye, kelime) -> {
+
+            // PDF Madde 2.2: String Metotları (toLowerCase, contains, valueOf)
+            String adSoyadKucuk = uye.getAdSoyad().toLowerCase();
+            String noStr = String.valueOf(uye.getOgrenciNo());
+
+            // İsimde VEYA numarada geçiyorsa bulsun
+            return adSoyadKucuk.contains(kelime) || noStr.contains(kelime);
+        };
+
+        // Generic Arama Motorunu çalıştır
+        List<BirimUyesi> sonuc = aramaMotoru.ara(anaVeriListesi, arananMetin, kriter);
+
+        // Sonuçları tabloya bas
+        gosterilenListe.clear();
+        gosterilenListe.addAll(sonuc);
+    }
+
     @FXML
     void btnYenile(ActionEvent event) {
-        verileriGetir();
+        txtArama.clear(); // Arama kutusunu temizle
+        verileriGetir();  // Verileri tekrar çek
     }
 
-    // "Seçili Üyeyi Sil" butonu için
     @FXML
     void btnSil(ActionEvent event) {
-        // Tablodan seçilen satırı al
         BirimUyesi secilen = tabloUyeler.getSelectionModel().getSelectedItem();
 
         if (secilen == null) {
@@ -66,7 +105,6 @@ public class UyelerController {
             return;
         }
 
-        // Onay iste
         Alert onay = new Alert(Alert.AlertType.CONFIRMATION);
         onay.setTitle("Silme Onayı");
         onay.setHeaderText(secilen.getAdSoyad() + " silinecek.");
@@ -74,17 +112,16 @@ public class UyelerController {
 
         Optional<ButtonType> sonuc = onay.showAndWait();
         if (sonuc.isPresent() && sonuc.get() == ButtonType.OK) {
-            // Veritabanından sil
             boolean silindi = userDAO.kullaniciSil(secilen.getId());
 
             if (silindi) {
-                // Başarılıysa ekrandaki listeden de sil
-                uyeListesi.remove(secilen);
+                // Hem ana listeden hem de ekrandaki listeden silmemiz lazım
+                anaVeriListesi.remove(secilen);
+                gosterilenListe.remove(secilen);
             } else {
                 Alert hata = new Alert(Alert.AlertType.ERROR);
                 hata.setTitle("Hata");
                 hata.setHeaderText("Silinemedi!");
-                hata.setContentText("Veritabanı hatası oluştu.");
                 hata.show();
             }
         }

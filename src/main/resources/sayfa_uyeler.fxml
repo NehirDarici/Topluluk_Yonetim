@@ -34,7 +34,8 @@
             <Region HBox.hgrow="ALWAYS" />
 
             <!-- Arama Kutusu (Görsel Modernlik İçin) -->
-            <TextField promptText="Üye ara..." style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;">
+            <!-- Arama Kutusu -->
+            <TextField fx:id="txtArama" onKeyReleased="#aramaYap" promptText="Üye ara..." style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;">
                 <font>
                     <Font size="13.0" />
                 </font>
