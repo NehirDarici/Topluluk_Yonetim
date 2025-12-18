@@ -1,73 +1,60 @@
 package com.proje.dao;
 
-import com.proje.model.BirimUyesi; // Artık User değil BirimUyesi kullanıyoruz
+import com.proje.interfaces.IUserService;
+import com.proje.model.BirimBaskani;
+import com.proje.model.BirimUyesi;
+import com.proje.utility.DatabaseUtility; // Utility import edildi
+
 import java.sql.*;
 
-public class UserDAO {
+public class UserDAO implements IUserService {
 
-    private static final String DB_URL = "jdbc:sqlite:topluluk_yonetim.db";
+    // ARTIK BURADA "DB_URL" veya "connect()" metoduna gerek yok!
+    // DatabaseUtility sınıfını kullanacağız.
 
-    private Connection connect() throws SQLException {
-        return DriverManager.getConnection(DB_URL);
-    }
-
-    // Ekleme Metodu
+    @Override
     public boolean addUser(BirimUyesi uye) {
         String sql = "INSERT INTO Kullanicilar(ogrenci_no, ad_soyad, sifre, rol, birim_id) VALUES(?,?,?,?,?)";
 
-        try (Connection conn = this.connect();
+        // DİKKAT: 'this.connect()' yerine 'DatabaseUtility.connect()' yazdık
+        try (Connection conn = DatabaseUtility.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, uye.getOgrenciNo());
-            pstmt.setString(2, uye.getAdSoyad()); // Miras alınan metot
-            pstmt.setString(3, uye.getSifre());   // Miras alınan metot
+            pstmt.setString(2, uye.getAdSoyad());
+            pstmt.setString(3, uye.getSifre());
             pstmt.setString(4, uye.getRol());
             pstmt.setInt(5, uye.getBirimId());
-
             pstmt.executeUpdate();
-            System.out.println("Kullanıcı eklendi: " + uye.getAdSoyad());
             return true;
         } catch (SQLException e) {
-            System.out.println("Kullanıcı ekleme hatası: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
-    // Giriş (Login) Metodu
-    public BirimUyesi loginUser(String studentNo, String password) {
+    @Override
+    public BirimUyesi loginUser(String no, String sifre) {
         String sql = "SELECT * FROM Kullanicilar WHERE ogrenci_no = ? AND sifre = ?";
-        try (Connection conn = this.connect();
+
+        // DİKKAT: 'DatabaseUtility.connect()' kullanıldı
+        try (Connection conn = DatabaseUtility.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, studentNo);
-            pstmt.setString(2, password);
+            pstmt.setString(1, no);
+            pstmt.setString(2, sifre);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                BirimUyesi uye = new BirimUyesi();
-                uye.setId(rs.getInt("kullanici_id")); // Miras
-                uye.setOgrenciNo(rs.getString("ogrenci_no"));
-                uye.setAdSoyad(rs.getString("ad_soyad")); // Miras
-                uye.setSifre(rs.getString("sifre"));      // Miras
-                uye.setRol(rs.getString("rol"));
-                uye.setBirimId(rs.getInt("birim_id"));
-                return uye;
+                String rol = rs.getString("rol");
+                // Polymorphism
+                if (rol.contains("baskan")) {
+                    return new BirimBaskani(rs.getInt("kullanici_id"), rs.getString("ogrenci_no"), rs.getString("ad_soyad"), rs.getString("sifre"), rol, rs.getInt("birim_id"));
+                } else {
+                    return new BirimUyesi(rs.getInt("kullanici_id"), rs.getString("ogrenci_no"), rs.getString("ad_soyad"), rs.getString("sifre"), rol, rs.getInt("birim_id"));
+                }
             }
-        } catch (SQLException e) {
-            System.out.println("Giriş hatası: " + e.getMessage());
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
         return null;
-    }
-
-    // Birim Ekleme (Aynı kalıyor)
-    public void addUnit(String unitName) {
-        String sql = "INSERT INTO Birimler(birim_adi) VALUES(?)";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, unitName);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Birim zaten var veya hata: " + e.getMessage());
-        }
     }
 }

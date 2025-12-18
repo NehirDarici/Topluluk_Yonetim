@@ -54,23 +54,14 @@ public class DBHelper {
                 + "FOREIGN KEY(birim_id) REFERENCES Birimler(birim_id)"
                 + ");";
 
-        String gorevlerTablosu = "CREATE TABLE IF NOT EXISTS Gorevler ("
-                + "gorev_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "baslik TEXT NOT NULL, "
-                + "aciklama TEXT, "
-                + "tarih TEXT NOT NULL, " // SQLite'da tarih TEXT olarak tutulur (YYYY-MM-DD)
-                + "durum TEXT DEFAULT 'BEKLIYOR', "
-                + "renk_kodu TEXT, "
-                + "atanan_birim_id INTEGER, "
-                + "FOREIGN KEY(atanan_birim_id) REFERENCES Birimler(birim_id)"
-                + ");";
+
 
         try (Connection conn = baglan();
              Statement stmt = conn.createStatement()) {
 
             stmt.execute(birimlerTablosu);
             stmt.execute(kullanicilarTablosu);
-            stmt.execute(gorevlerTablosu);
+
 
             System.out.println("Tablolar kontrol edildi ve hazır.");
 

@@ -1,32 +1,32 @@
 package com.proje.model;
 
-public class BirimUyesi extends Kullanici {
-    private int id;        // Veritabanındaki 'kullanici_id' (Primary Key)
-    private int birimId;   // Veritabanındaki 'birim_id' (Foreign Key)
+public class BirimUyesi {
+    protected int id;
+    protected String ogrenciNo;
+    protected String adSoyad;
+    protected String sifre;
+    protected String rol;
+    protected int birimId;
 
-    // 1. Boş Constructor (Veritabanından veri çekerken lazım)
-    public BirimUyesi() {
-        super();
-    }
-
-    // 2. Dolu Constructor (Veritabanından okurken ID dahil her şeyi set ederiz)
+    // 6 Parametreli Constructor (UserDAO bunu kullanır)
     public BirimUyesi(int id, String ogrenciNo, String adSoyad, String sifre, String rol, int birimId) {
-        // Ata sınıfın (Kullanici) yapıcısını çağırıyoruz. Sıralama ÖNEMLİ!
-        super(ogrenciNo, adSoyad, sifre, rol);
         this.id = id;
+        this.ogrenciNo = ogrenciNo;
+        this.adSoyad = adSoyad;
+        this.sifre = sifre;
+        this.rol = rol;
         this.birimId = birimId;
     }
 
-    // 3. Kayıt Constructor'ı (Yeni kayıt yaparken ID henüz yoktur)
-    public BirimUyesi(String ogrenciNo, String adSoyad, String sifre, String rol, int birimId) {
-        super(ogrenciNo, adSoyad, sifre, rol);
-        this.birimId = birimId;
-    }
-
-    // Getter ve Setter Metotları
+    // Getter Metotları (Private alanlara erişim için)
     public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
+    public String getOgrenciNo() { return ogrenciNo; }
+    public String getAdSoyad() { return adSoyad; }
+    public String getSifre() { return sifre; }
+    public String getRol() { return rol; }
     public int getBirimId() { return birimId; }
-    public void setBirimId(int birimId) { this.birimId = birimId; }
+
+    public void takvimiGoruntule() {
+        System.out.println(adSoyad + " takvimi görüntülüyor.");
+    }
 }

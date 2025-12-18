@@ -53,29 +53,52 @@ public class LoginController {
     }
 
     private String hedefSayfayiBelirle(BirimUyesi user) {
-        String rol = user.getRol(); // Veritabanından gelen: "topluluk_baskani" veya "birim_baskani"
+        String rol = user.getRol();
+        int birimId = user.getBirimId(); // 2: Etkinlik, 3: Sosyal Medya
 
-        System.out.println("Yönlendirilecek ROL: " + rol); // Kontrol için yazdıralım
-
-        // --- SENARYO 1: GENEL BAŞKAN ---
-        // Veritabanında "topluluk_baskani" yazıyor, buna dikkat!
+        // --- SENARYO 1: BAŞKANLAR (Hepsini başkan ekranına alalım) ---
         if ("topluluk_baskani".equalsIgnoreCase(rol) || "baskan".equalsIgnoreCase(rol)) {
-            return "baskan_ekrani.fxml"; // BU DOSYANIN İSMİNİN DOĞRU OLDUĞUNA EMİN MİSİN?
-        }
-
-        // --- SENARYO 2: BİRİM BAŞKANI ---
-        else if ("birim_baskani".equalsIgnoreCase(rol)) {
-            // Şimdilik onları da başkan ekranına atalım veya kendi dosyaları varsa onu yaz
-            // return "etkinlik_baskan.fxml";
             return "baskan_ekrani.fxml";
         }
 
-        // --- SENARYO 3: ÜYELER ---
+        // --- SENARYO 2: ÜYELER (Birime Göre Ayrışacak) ---
         else {
-            // Eğer "uye_ekrani.fxml" diye bir dosyan YOKSA, burası hata verir.
-            // O dosya yapılana kadar geçici olarak baskan ekranına yönlendir:
-            return "baskan_ekrani.fxml";
+            if (birimId == 2) {
+                // Etkinlik Üyesi
+                return "etkinlik_uye.fxml";
+            }
+            else if (birimId == 3) {
+                // Sosyal Medya Üyesi
+                return "sosyal_uye.fxml";
+            }
+            else {
+                // Tanımsız birimse veya Yönetim üyesiyse (ID=1)
+                return "baskan_ekrani.fxml";
+            }
         }
+    }
+    // LoginController.java içine ekle:
+
+    @FXML
+    void btnSifremiUnuttumTiklandi(ActionEvent event) {
+        // Basit bir dialog penceresi (TextInputDialog kullanılabilir veya yeni sahne)
+        // Şimdilik konsol simülasyonu:
+        System.out.println("Şifre sıfırlama ekranı açılıyor...");
+
+        // PDF Gereksinimi: String işlemleri (contains, equals vb.) [cite: 31]
+        String email = "ornek@ogrenci.edu.tr"; // Normalde kullanıcıdan alınır
+        if(email.contains("@") && email.endsWith(".edu.tr")) {
+            System.out.println("Mail gönderildi: " + email);
+            // Alert (Uyarı) mesajı gösterilebilir
+        } else {
+            System.out.println("Geçersiz format!");
+        }
+    }
+
+    @FXML
+    void btnCikisYapTiklandi(ActionEvent event) {
+        System.out.println("Uygulama kapatılıyor...");
+        System.exit(0); // Uygulamayı tamamen kapatır
     }
 
     private void sayfaDegistir(ActionEvent event, String dosyaAdi) {
