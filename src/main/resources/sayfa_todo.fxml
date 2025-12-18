@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.TodoController">
+<HBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="20.0" style="-fx-background-color: #f0f2f5; -fx-padding: 25;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.TodoController">
     <children>
-        <Label fx:id="lblBaslik" layoutX="26.0" layoutY="24.0" text="YAPILACAKLAR LİSTESİ" textFill="#2d3447">
-            <font>
-                <Font name="System Bold" size="18.0" />
-            </font>
-        </Label>
 
-        <ListView fx:id="listeGorevler" layoutX="26.0" layoutY="65.0" prefHeight="250.0" prefWidth="548.0" />
+        <VBox maxWidth="400.0" prefWidth="400.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-padding: 20;" HBox.hgrow="ALWAYS">
+            <children>
+                <Label text="✅ Yapılacaklar" textFill="#2d3447">
+                    <font>
+                        <Font name="Segoe UI Bold" size="20.0" />
+                    </font>
+                </Label>
 
-        <TextField fx:id="txtYeniGorev" layoutX="26.0" layoutY="330.0" prefHeight="35.0" prefWidth="380.0" promptText="Yeni görev yazın..." />
+                <ListView fx:id="listeGorevler" prefHeight="250.0" prefWidth="384.0" style="-fx-background-radius: 10; -fx-border-color: #eee; -fx-border-radius: 10;" VBox.vgrow="ALWAYS" />
 
-        <Button layoutX="416.0" layoutY="330.0" mnemonicParsing="false" onAction="#btnEkle" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: #2D3447;" text="Ekle" textFill="WHITE" />
+                <HBox spacing="10.0">
+                    <children>
+                        <TextField fx:id="txtYeniGorev" prefHeight="40.0" promptText="Yeni görev ekle..." style="-fx-background-radius: 8;" HBox.hgrow="ALWAYS" />
+                        <Button onAction="#btnEkle" prefHeight="40.0" prefWidth="70.0" style="-fx-background-color: #2D3447; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;" text="Ekle" />
+                    </children>
+                </HBox>
+                <Button maxWidth="1.7976931348623157E308" onAction="#btnSil" prefHeight="35.0" style="-fx-background-color: #ff7675; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;" text="Seçileni Sil" />
+            </children>
+        </VBox>
 
-        <Button layoutX="496.0" layoutY="330.0" mnemonicParsing="false" onAction="#btnSil" prefHeight="35.0" prefWidth="78.0" style="-fx-background-color: #d63031;" text="Seçileni Sil" textFill="WHITE" />
+        <VBox spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-padding: 20;" HBox.hgrow="ALWAYS">
+            <children>
+                <Label text="📝 Notlarım" textFill="#2d3447">
+                    <font>
+                        <Font name="Segoe UI Bold" size="20.0" />
+                    </font>
+                </Label>
+
+                <TextArea fx:id="txtNotlar" prefHeight="200.0" promptText="Buraya not alabilirsiniz..." style="-fx-background-radius: 10; -fx-border-color: #eee; -fx-border-radius: 10; -fx-control-inner-background: #fffcf0;" wrapText="true" VBox.vgrow="ALWAYS" />
+
+                <Label text="Otomatik kaydedilir." textFill="#a2a2a2">
+                    <font>
+                        <Font size="11.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+
     </children>
-</AnchorPane>
+</HBox>

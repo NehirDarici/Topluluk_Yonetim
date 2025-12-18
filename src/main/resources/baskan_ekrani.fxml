@@ -10,7 +10,6 @@
             <Region prefHeight="54.0" prefWidth="170.0" />
             <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnTakvimTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Takvim" />
              <Button layoutX="10.0" layoutY="63.0" mnemonicParsing="false" onAction="#btnToDoTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="To-Do List" />
-            <Button layoutX="10.0" layoutY="36.0" mnemonicParsing="false" onAction="#btnGorevlerTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Görev Atama" />
             <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnUyelerTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Üye Yönetimi" />
             <Button layoutX="10.0" layoutY="89.0" mnemonicParsing="false" onAction="#btnDosyalarTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Dosya İşlemleri" />
             <Region prefHeight="286.0" prefWidth="170.0" />
@@ -20,6 +19,6 @@
       </VBox>
    </left>
    <center>
-      <StackPane  prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

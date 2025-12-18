@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.io.*;
@@ -18,101 +19,106 @@ public class TodoController {
     @FXML private Label lblBaslik;
     @FXML private ListView<String> listeGorevler;
     @FXML private TextField txtYeniGorev;
+    @FXML private TextArea txtNotlar; // Yeni eklediğimiz not alanı
 
-    // Listeyi ekranda göstermek için özel liste yapısı
     private ObservableList<String> gorevListesi = FXCollections.observableArrayList();
-
-    // Varsayılan dosya adı
     private String dosyaAdi = "genel_todo.txt";
+    private String notDosyaAdi = "genel_notlar.txt"; // Notlar için dosya adı
 
     @FXML
     public void initialize() {
-        // 1. Giriş yapan gerçek kullanıcıyı al (SessionManager'dan)
         BirimUyesi aktifUye = SessionManager.getInstance().getCurrentUser();
 
         if (aktifUye != null) {
             dosyaBelirle(aktifUye);
         }
 
-        // 2. Listeyi ekrana bağla
         listeGorevler.setItems(gorevListesi);
 
-        // 3. Dosyadaki eski görevleri oku ve getir
+        // Verileri yükle
         dosyadanOku();
+        notlariDosyadanOku();
+
+        // Notlar değiştikçe otomatik kaydetme (Listener)
+        txtNotlar.textProperty().addListener((observable, oldValue, newValue) -> {
+            notlariDosyayaYaz(newValue);
+        });
     }
 
-    // --- KİMİN HANGİ DOSYAYI GÖRECEĞİNİ BELİRLE ---
     private void dosyaBelirle(BirimUyesi user) {
-        // Senin veritabanındaki Birim ID'lerine göre dosya seçiyoruz.
-        // NOT: Veritabanındaki ID'lerini kontrol et (1: Yazılım, 2: Etkinlik vb.)
-
         int birimId = user.getBirimId();
-        String rol = user.getRol(); // "baskan" veya "uye"
 
-        System.out.println("Todo Yükleniyor... BirimID: " + birimId + " Rol: " + rol);
-
-        // SENARYO 1: YAZILIM EKİBİ / YÖNETİM (ID = 1 varsayıyoruz)
+        // Birim ID'ye göre hem To-Do hem Not dosyasını belirliyoruz
         if (birimId == 1) {
             dosyaAdi = "todo_yonetim.txt";
-            lblBaslik.setText("YÖNETİM KURULU AJANDASI");
-        }
-        // SENARYO 2: ETKİNLİK EKİBİ (ID = 2 varsayıyoruz)
-        else if (birimId == 2) {
+            notDosyaAdi = "notlar_yonetim.txt";
+        } else if (birimId == 2) {
             dosyaAdi = "todo_etkinlik.txt";
-            lblBaslik.setText("ETKİNLİK EKİBİ GÖREVLERİ");
-        }
-        // SENARYO 3: DİĞER BİRİMLER
-        else {
+            notDosyaAdi = "notlar_etkinlik.txt";
+        } else {
             dosyaAdi = "todo_genel.txt";
-            lblBaslik.setText("GENEL GÖREV LİSTESİ");
+            notDosyaAdi = "notlar_genel.txt";
         }
     }
 
-    // --- GÖREV EKLEME ---
+    // --- TO-DO İŞLEMLERİ ---
     @FXML
     void btnEkle(ActionEvent event) {
         String yeniGorev = txtYeniGorev.getText().trim();
         if (!yeniGorev.isEmpty()) {
-            gorevListesi.add(yeniGorev); // Listeye ekle
-            txtYeniGorev.clear();        // Kutuyu temizle
-            dosyayaYaz();                // Dosyayı güncelle
+            gorevListesi.add("• " + yeniGorev); // Maddeli görünüm için simge ekledik
+            txtYeniGorev.clear();
+            dosyayaYaz();
         }
     }
 
-    // --- GÖREV SİLME ---
     @FXML
     void btnSil(ActionEvent event) {
         String secilen = listeGorevler.getSelectionModel().getSelectedItem();
         if (secilen != null) {
-            gorevListesi.remove(secilen); // Listeden sil
-            dosyayaYaz();                 // Dosyayı güncelle
+            gorevListesi.remove(secilen);
+            dosyayaYaz();
         }
     }
 
-    // --- DOSYADAN OKUMA (I/O) ---
+    // --- NOTLAR İÇİN I/O İŞLEMLERİ ---
+    private void notlariDosyadanOku() {
+        File file = new File(notDosyaAdi);
+        if (!file.exists()) return;
+
+        try (Scanner sc = new Scanner(file)) {
+            StringBuilder sb = new StringBuilder();
+            while (sc.hasNextLine()) {
+                sb.append(sc.nextLine()).append("\n");
+            }
+            txtNotlar.setText(sb.toString());
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    private void notlariDosyayaYaz(String icerik) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(notDosyaAdi))) {
+            writer.write(icerik);
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    // Mevcut dosyadanOku ve dosyayaYaz metodların aynı kalabilir...
     private void dosyadanOku() {
         File dosya = new File(dosyaAdi);
         if (!dosya.exists()) return;
-
+        gorevListesi.clear();
         try (Scanner scanner = new Scanner(dosya)) {
             while (scanner.hasNextLine()) {
-                String satir = scanner.nextLine();
-                gorevListesi.add(satir);
+                gorevListesi.add(scanner.nextLine());
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (FileNotFoundException e) { e.printStackTrace(); }
     }
 
-    // --- DOSYAYA YAZMA (I/O) ---
     private void dosyayaYaz() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dosyaAdi))) {
             for (String gorev : gorevListesi) {
                 writer.write(gorev);
                 writer.newLine();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 }

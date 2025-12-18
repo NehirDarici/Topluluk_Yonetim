@@ -27,7 +27,7 @@ public class BaskanController {
     @FXML
     void btnToDoTiklandi(ActionEvent event) {
         System.out.println("To-Do Listesi açılıyor...");
-        // Yetki (true/false) önemli değil, TodoController kendi içinde dosyayı seçecek
+        // Dosya adının tam olarak 'sayfa_todo.fxml' olduğundan emin ol (küçük/büyük harf duyarlıdır)
         sayfaGetir("sayfa_todo.fxml", false);
     }
     @FXML
@@ -46,39 +46,44 @@ public class BaskanController {
     // --- SAYFA DEĞİŞTİRME METODU (HATA AYIKLAMALI) ---
     private void sayfaGetir(String dosyaAdi, boolean yetkiVarMi) {
         try {
-            // 1. ADIM: Dosyayı bulmaya çalış
             System.out.println("1. Adım: " + dosyaAdi + " dosyası aranıyor...");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
             Pane view = loader.load();
             System.out.println("   -> Dosya bulundu ve yüklendi!");
 
-            // 2. ADIM: Controller bağlantısını kontrol et
             if (dosyaAdi.equals("sayfa_takvim.fxml")) {
                 TakvimController ctrl = loader.getController();
                 if (ctrl != null) {
                     ctrl.yetkiAyarla(yetkiVarMi);
-                    System.out.println("   -> Yetki ayarlandı.");
-                } else {
-                    System.out.println("   -> UYARI: TakvimController null geldi! FXML bağlantısını kontrol et.");
                 }
             }
 
-            // 3. ADIM: Ekrana yerleştir (EN KRİTİK KISIM)
+            // --- DÜZELTİLEN KRİTİK KISIM ---
             if (anaIcerik != null) {
+                // 1. İçeriğin kendi genişleme sınırlarını kaldır
+                view.setMaxWidth(Double.MAX_VALUE);
+                view.setMaxHeight(Double.MAX_VALUE);
+
+                // 2. BorderPane'e bu içeriği merkeze koymasını söyle
                 anaIcerik.setCenter(view);
-                System.out.println("BAŞARILI: Turuncu ekran ortadaki alana yerleştirildi.");
+
+                // 3. İçeriğin BorderPane içinde her yöne yayılmasını zorla
+                // Bu metot statik genişlik vermekten çok daha sağlıklıdır.
+                BorderPane.setAlignment(view, javafx.geometry.Pos.CENTER);
+
+                // Eğer sayfanın en dışı HBox ise yatayda yayılmasını garanti et
+                if (view instanceof javafx.scene.layout.HBox) {
+                    javafx.scene.layout.HBox.setHgrow(view, javafx.scene.layout.Priority.ALWAYS);
+                }
+
+                System.out.println("BAŞARILI: İçerik tam genişliğe zorlandı.");
             } else {
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                System.out.println("KRİTİK HATA: 'anaIcerik' değişkeni BOŞ (NULL)!");
-                System.out.println("SceneBuilder'da en dıştaki BorderPane'in fx:id kısmına 'anaIcerik' yazdığına emin misin?");
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println("KRİTİK HATA: 'anaIcerik' (BorderPane) null!");
             }
 
         } catch (IOException e) {
-            System.out.println("DOSYA OKUMA HATASI:");
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println("BİLİNMEYEN BİR HATA:");
             e.printStackTrace();
         }
     }
