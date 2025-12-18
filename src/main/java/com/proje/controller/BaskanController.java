@@ -8,82 +8,75 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import java.io.IOException;
 
 public class BaskanController {
 
     @FXML
-    private BorderPane anaIcerik; // Bu değişkenin null olup olmadığını kontrol edeceğiz
+    private BorderPane anaIcerik; // FXML'deki fx:id="anaIcerik" ile aynı olmalı!
 
     // --- TAKVİM BUTONU ---
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
-        System.out.println(">> BUTONA BASILDI. Yükleme deneniyor...");
-        sayfaGetir("sayfa_takvim.fxml", true);
+        System.out.println("Takvim açılıyor...");
+        sayfaGetir("sayfa_takvim.fxml");
     }
 
-    // --- DİĞER BUTONLAR ---
+    // --- TO-DO LIST BUTONU ---
     @FXML
     void btnToDoTiklandi(ActionEvent event) {
         System.out.println("To-Do Listesi açılıyor...");
-        // Dosya adının tam olarak 'sayfa_todo.fxml' olduğundan emin ol (küçük/büyük harf duyarlıdır)
-        sayfaGetir("sayfa_todo.fxml", false);
+        sayfaGetir("sayfa_todo.fxml");
     }
-    @FXML
-    void btnGorevlerTiklandi(ActionEvent event) {
-        System.out.println("Görevler tıklandı.");
-    }
+
+    // --- DİĞER BUTONLAR ---
+    @FXML void btnGorevlerTiklandi(ActionEvent event) { System.out.println("Görevler (Boş)"); }
     @FXML
     void btnUyelerTiklandi(ActionEvent event) {
-        System.out.println("Üyeler tıklandı.");
-    }
-    @FXML
-    void btnDosyalarTiklandi(ActionEvent event) {
-        System.out.println("Dosyalar tıklandı.");
-    }
+        System.out.println("Üye Yönetimi Sayfası Yükleniyor...");
+        sayfaGetir("sayfa_uyeler.fxml");
+    }    @FXML void btnDosyalarTiklandi(ActionEvent event) { System.out.println("Dosyalar (Boş)"); }
 
-    // --- SAYFA DEĞİŞTİRME METODU (HATA AYIKLAMALI) ---
-    private void sayfaGetir(String dosyaAdi, boolean yetkiVarMi) {
+    // --- SAYFA DEĞİŞTİRME MOTORU ---
+    private void sayfaGetir(String dosyaAdi) {
         try {
-            System.out.println("1. Adım: " + dosyaAdi + " dosyası aranıyor...");
+            // 1. Ana İçerik Alanı Hazır mı?
+            if (anaIcerik == null) {
+                System.out.println("KRİTİK HATA: 'anaIcerik' (BorderPane) null! FXML'de fx:id kontrol et.");
+                return;
+            }
+
+            // 2. Dosyayı Yükle
+            System.out.println("Yükleniyor: " + dosyaAdi);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
-            Pane view = loader.load();
-            System.out.println("   -> Dosya bulundu ve yüklendi!");
+            Pane view = loader.load(); // Pane olarak alıyoruz ki boyut ayarı yapabilelim
 
-            if (dosyaAdi.equals("sayfa_takvim.fxml")) {
-                TakvimController ctrl = loader.getController();
-                if (ctrl != null) {
-                    ctrl.yetkiAyarla(yetkiVarMi);
-                }
+            // 3. TAM EKRAN YAPMA AYARI (Responsive)
+            // Yüklenen sayfanın boyutunu, anaIcerik'in boyutuna bağlıyoruz (Bind)
+            if (view instanceof Region) {
+                Region regionView = (Region) view;
+                // Genişlik ve Yükseklik sınırlarını kaldır
+                regionView.setMaxWidth(Double.MAX_VALUE);
+                regionView.setMaxHeight(Double.MAX_VALUE);
+                regionView.setPrefWidth(Region.USE_COMPUTED_SIZE);
+                regionView.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
+                // BorderPane'in boyutuna göre genişlemesini sağla
+                regionView.prefWidthProperty().bind(anaIcerik.widthProperty());
+                regionView.prefHeightProperty().bind(anaIcerik.heightProperty());
             }
 
-            // --- DÜZELTİLEN KRİTİK KISIM ---
-            if (anaIcerik != null) {
-                // 1. İçeriğin kendi genişleme sınırlarını kaldır
-                view.setMaxWidth(Double.MAX_VALUE);
-                view.setMaxHeight(Double.MAX_VALUE);
-
-                // 2. BorderPane'e bu içeriği merkeze koymasını söyle
-                anaIcerik.setCenter(view);
-
-                // 3. İçeriğin BorderPane içinde her yöne yayılmasını zorla
-                // Bu metot statik genişlik vermekten çok daha sağlıklıdır.
-                BorderPane.setAlignment(view, javafx.geometry.Pos.CENTER);
-
-                // Eğer sayfanın en dışı HBox ise yatayda yayılmasını garanti et
-                if (view instanceof javafx.scene.layout.HBox) {
-                    javafx.scene.layout.HBox.setHgrow(view, javafx.scene.layout.Priority.ALWAYS);
-                }
-
-                System.out.println("BAŞARILI: İçerik tam genişliğe zorlandı.");
-            } else {
-                System.out.println("KRİTİK HATA: 'anaIcerik' (BorderPane) null!");
-            }
+            // 4. Ekrana Yerleştir
+            anaIcerik.setCenter(view);
+            System.out.println("BAŞARILI: " + dosyaAdi + " sahneye yerleştirildi.");
 
         } catch (IOException e) {
+            System.out.println("DOSYA BULUNAMADI: /" + dosyaAdi);
             e.printStackTrace();
         } catch (Exception e) {
+            System.out.println("BEKLENMEYEN HATA: Controller veya FXML içinde sorun var.");
             e.printStackTrace();
         }
     }
@@ -92,10 +85,9 @@ public class BaskanController {
     @FXML
     void btnCikisYap(ActionEvent event) {
         try {
-            Parent loginPage = FXMLLoader.load(getClass().getResource("/com/example/kampustopluluksistemi/login.fxml"));
-            Scene scene = new Scene(loginPage);
+            Parent loginPage = FXMLLoader.load(getClass().getResource("/login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
+            stage.setScene(new Scene(loginPage));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
+/* --- MEVCUT GİRİŞ EKRANI TASARIMLARI --- */
 .root {
-    -fx-background-color: white;
+    -fx-background-color: #F4F7FA; /* Arka planı hafif gri yaptık ki beyaz kartlar belli olsun */
 }
 
 .form-panel {
@@ -7,6 +8,7 @@
     -fx-alignment: center;
     -fx-background-color: white;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 10);
+    -fx-background-radius: 10; /* Panellere yumuşaklık ekledik */
 }
 
 .header-title {
@@ -66,8 +68,177 @@
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-font-size: 16px;
+    -fx-cursor: hand;
 }
 
 .login-button:hover {
     -fx-background-color: #e64a19;
+}
+
+
+/* --------------------------------------------------------- */
+/* --- YENİ EKLENEN: TABLO VE ÜYE YÖNETİMİ TASARIMLARI --- */
+/* --------------------------------------------------------- */
+
+/* Beyaz Kart Görünümü (Tabloyu saran kutu için) */
+.card-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-padding: 15;
+}
+
+/* --- TABLO TASARIMI --- */
+.modern-table {
+    -fx-background-color: transparent;
+    -fx-base: white; /* Temel renk */
+    -fx-control-inner-background: white;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+}
+
+/* Sütun Başlıkları */
+.modern-table .column-header-background {
+    -fx-background-color: #2D3447; /* Yan menüyle uyumlu lacivert */
+    -fx-background-radius: 8 8 0 0; /* Üst köşeler yuvarlak */
+}
+
+.modern-table .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 45px; /* Başlık yüksekliği */
+    -fx-border-color: transparent;
+}
+
+.modern-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-padding: 0 0 0 10;
+}
+
+/* Satırlar */
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #E0E0E0 transparent; /* Sadece alt çizgi */
+    -fx-border-width: 0.5;
+}
+
+/* Satır üzerine gelince (Hover) - Turuncu temanın çok açık tonu */
+.modern-table .table-row-cell:hover {
+    -fx-background-color: #FFF3E0;
+}
+
+/* Seçili Satır - Temana uygun turuncu vurgu */
+.modern-table .table-row-cell:selected {
+    -fx-background-color: #FFE0B2; /* Açık turuncu */
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.modern-table .table-row-cell:selected .text {
+    -fx-fill: #E65100; /* Seçili yazı koyu turuncu */
+}
+
+/* Tablo boşken çıkan yazı */
+.modern-table .placeholder .label {
+    -fx-text-fill: #999;
+    -fx-font-size: 14px;
+}
+
+/* --- AKSİYON BUTONLARI (Yenile ve Sil) --- */
+
+/* Yenile Butonu (Mavi/Gri tonlarda, sakin) */
+.btn-refresh {
+    -fx-background-color: white;
+    -fx-text-fill: #555;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 15;
+}
+.btn-refresh:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #bbb;
+}
+
+/* Sil Butonu (Kırmızı, dikkat çekici) */
+.btn-delete {
+    -fx-background-color: #FFEBEE; /* Çok açık kırmızı arka plan */
+    -fx-text-fill: #D32F2F; /* Koyu kırmızı yazı */
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 15;
+    -fx-border-color: transparent;
+}
+.btn-delete:hover {
+    -fx-background-color: #FFCDD2; /* Hover olunca koyulaşsın */
+}
+/* --- BURADAN AŞAĞISINI MEVCUT style.css DOSYANIN EN ALTINA YAPIŞTIR --- */
+
+/* --- MODERN TABLO TASARIMI --- */
+
+/* Tablonun genel çerçevesi */
+.modern-table {
+    -fx-background-color: transparent; /* Arka plan şeffaf olsun ki kartın beyazlığı görünsün */
+    -fx-base: white;
+    -fx-control-inner-background: white;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Sütun Başlıkları (Header) - Koyu Lacivert */
+.modern-table .column-header-background {
+    -fx-background-color: #2D3447;
+    -fx-background-radius: 8 8 0 0; /* Sadece üst köşeleri yuvarla */
+}
+
+/* Başlık Hücreleri */
+.modern-table .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 45px; /* Başlık yüksekliği */
+    -fx-border-color: transparent;
+}
+
+/* Başlık Yazıları */
+.modern-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-padding: 0 0 0 10;
+}
+
+/* Satırlar (Rows) */
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #E0E0E0 transparent; /* Sadece alt çizgi */
+    -fx-border-width: 0.5;
+}
+
+/* Mouse ile satırın üzerine gelince (Hover) */
+.modern-table .table-row-cell:hover {
+    -fx-background-color: #F0F4F8; /* Çok açık mavi-gri */
+}
+
+/* Seçili Satır */
+.modern-table .table-row-cell:selected {
+    -fx-background-color: #E3F2FD; /* Google tarzı açık mavi seçim rengi */
+    -fx-table-cell-border-color: transparent;
+    -fx-background-insets: 0;
+}
+
+/* Boş tablo yazısı */
+.modern-table .placeholder .label {
+    -fx-text-fill: #999;
+    -fx-font-size: 14px;
+}
+
+/* Scroll Bar (Kaydırma Çubuğu) İnce Ayar */
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #ccc;
+    -fx-background-radius: 5em;
 }

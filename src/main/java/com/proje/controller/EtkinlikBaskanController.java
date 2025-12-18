@@ -19,23 +19,29 @@ public class EtkinlikBaskanController {
     // --- TAKVİM BUTONU ---
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
-        System.out.println("Takvim açılıyor...");
-        sayfaGetir("sayfa_takvim.fxml", true);
+        System.out.println("Takvim sayfası yükleniyor...");
+        // Sadece FXML adını veriyoruz, yetki kontrolünü TakvimController kendisi yapacak.
+        sayfaGetir("sayfa_takvim.fxml");
     }
+
+    // sayfaGetir metodun zaten var, onu değiştirmene gerek yok.
+    // Ancak anaIcerik (BorderPane) null hatası almamak için FXML kontrolü yapalım (Adım 2).
 
     // --- ÜYE YÖNETİMİ ---
     @FXML
     void btnUyelerTiklandi(ActionEvent event) {
         System.out.println("Üye yönetimi tıklandı.");
+        // İleride buraya da sayfaGetir("uye_yonetimi.fxml") gelecek
     }
 
     // --- GÖREV ATAMA ---
     @FXML
     void btnGorevlerTiklandi(ActionEvent event) {
         System.out.println("Görev atama tıklandı.");
+        // sayfaGetir("gorev_atama.fxml");
     }
 
-    // --- DOSYA İŞLEMLERİ (FXML'de iki butona bağlanmış, sorun değil) ---
+    // --- DOSYA İŞLEMLERİ ---
     @FXML
     void btnDosyalarTiklandi(ActionEvent event) {
         System.out.println("Dosya işlemleri tıklandı.");
@@ -45,7 +51,8 @@ public class EtkinlikBaskanController {
     @FXML
     void btnCikisYap(ActionEvent event) {
         try {
-            Parent loginPage = FXMLLoader.load(getClass().getResource("login.fxml"));
+            // Login sayfasına geri dön
+            Parent loginPage = FXMLLoader.load(getClass().getResource("/login.fxml")); // Slash işaretine dikkat
             Scene scene = new Scene(loginPage);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
@@ -55,19 +62,18 @@ public class EtkinlikBaskanController {
         }
     }
 
-    // --- SAYFA DEĞİŞTİRME MOTORU ---
-    private void sayfaGetir(String dosyaAdi, boolean yetkiVarMi) {
+    // --- SAYFA DEĞİŞTİRME MOTORU (GÜNCELLENDİ) ---
+    // 'boolean yetkiVarMi' parametresini sildik, artık gerek yok.
+    private void sayfaGetir(String dosyaAdi) {
         try {
             // Dosya yolunu garantiye alıyoruz
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
             Pane view = loader.load();
 
-            if (dosyaAdi.equals("sayfa_takvim.fxml")) {
-                TakvimController ctrl = loader.getController();
-                if (ctrl != null) {
-                    ctrl.yetkiAyarla(yetkiVarMi);
-                }
-            }
+            // --- BURADAKİ ESKİ 'yetkiAyarla' KODUNU SİLDİK ---
+            // TakvimController artık kendi yetkisini initialize() metodunda
+            // SessionManager üzerinden kontrol ediyor. Dışarıdan müdahaleye gerek kalmadı.
+
             if (anaIcerik != null) {
                 anaIcerik.setCenter(view);
             }

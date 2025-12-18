@@ -3,9 +3,11 @@ package com.proje.dao;
 import com.proje.interfaces.IUserService;
 import com.proje.model.BirimBaskani;
 import com.proje.model.BirimUyesi;
-import com.proje.utility.DatabaseUtility; // Utility import edildi
+import com.proje.utility.DatabaseUtility;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO implements IUserService {
 
@@ -56,5 +58,49 @@ public class UserDAO implements IUserService {
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
+    }
+
+    // --- YENİ EKLENEN METOTLAR ---
+
+    // 1. Tüm Kullanıcıları Listeleme (TableView için)
+    public List<BirimUyesi> getTumKullanicilar() {
+        List<BirimUyesi> liste = new ArrayList<>();
+        String sql = "SELECT * FROM Kullanicilar";
+
+        try (Connection conn = DatabaseUtility.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                BirimUyesi uye = new BirimUyesi(
+                        rs.getInt("kullanici_id"),
+                        rs.getString("ogrenci_no"),
+                        rs.getString("ad_soyad"),
+                        rs.getString("sifre"),
+                        rs.getString("rol"),
+                        rs.getInt("birim_id")
+                );
+                liste.add(uye);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return liste;
+    }
+
+    // 2. Kullanıcı Silme
+    public boolean kullaniciSil(int id) {
+        String sql = "DELETE FROM Kullanicilar WHERE kullanici_id = ?";
+        try (Connection conn = DatabaseUtility.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            int etkilenen = pstmt.executeUpdate();
+            return etkilenen > 0; // Silme başarılıysa true döner
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

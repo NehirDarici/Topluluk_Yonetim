@@ -16,50 +16,64 @@ public class SosyalBaskanController {
     @FXML
     private BorderPane anaIcerik;
 
-    // Takvim Butonu
+    // --- TAKVİM BUTONU ---
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
-        // Sosyal Başkanı da yetkili olsun (TRUE)
-        sayfaGetir("sayfa_takvim.fxml", true);
+        System.out.println("Takvim açılıyor...");
+        // ARTIK 'true' veya 'false' GÖNDERMİYORUZ.
+        // TakvimController, kimin giriş yaptığını SessionManager'dan kendisi öğreniyor.
+        sayfaGetir("sayfa_takvim.fxml");
     }
+
+    // --- TO-DO LIST BUTONU ---
     @FXML
     void btnToDoTiklandi(ActionEvent event) {
         System.out.println("To-Do Listesi açılıyor...");
-        // Yetki önemli değil, TodoController içeride dosyayı kendi seçecek
-        sayfaGetir("sayfa_todo.fxml", false);
+        // Burada da parametreye gerek yok
+        sayfaGetir("sayfa_todo.fxml");
     }
 
+    // --- DİĞER BUTONLAR (Placeholder) ---
+    @FXML void btnUyelerTiklandi(ActionEvent event) { System.out.println("Üyeler tıklandı (Boş)"); }
+    @FXML void btnGorevlerTiklandi(ActionEvent event) { System.out.println("Görevler tıklandı (Boş)"); }
+    @FXML void btnDosyalarTiklandi(ActionEvent event) { System.out.println("Dosyalar tıklandı (Boş)"); }
 
-
-    // Diğer Butonlar (Boş - Hata vermesin diye)
-    @FXML void btnUyelerTiklandi(ActionEvent event) { System.out.println("Boş"); }
-    @FXML void btnGorevlerTiklandi(ActionEvent event) { System.out.println("Boş"); }
-    @FXML void btnDosyalarTiklandi(ActionEvent event) { System.out.println("Boş"); }
-
+    // --- ÇIKIŞ YAP ---
     @FXML
     void btnCikisYap(ActionEvent event) {
         cikisIslemi(event);
     }
 
-    // Ortak Metotlar
-    private void sayfaGetir(String dosyaAdi, boolean yetkiVarMi) {
+    // --- SAYFA GETİRME MOTORU (GÜNCELLENDİ) ---
+    // 'boolean yetkiVarMi' parametresini sildik!
+    private void sayfaGetir(String dosyaAdi) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/kampustopluluksistemi/" + dosyaAdi));
+            // Dosya yolunu düzelttik: "/com/example/..." yerine direkt resource köküne bakıyoruz "/"
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
             Pane view = loader.load();
-            if (dosyaAdi.equals("sayfa_takvim.fxml")) {
-                TakvimController ctrl = loader.getController();
-                if (ctrl != null) ctrl.yetkiAyarla(yetkiVarMi);
+
+            // --- ESKİ HATALI KODLAR SİLİNDİ ---
+            // if (dosyaAdi.equals("sayfa_takvim.fxml")) { ... ctrl.yetkiAyarla(...) }
+            // Bu kısım silindi çünkü artık TakvimController kendi işini kendi yapıyor.
+
+            if (anaIcerik != null) {
+                anaIcerik.setCenter(view);
             }
-            if (anaIcerik != null) anaIcerik.setCenter(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            System.out.println("HATA: " + dosyaAdi + " yüklenemedi!");
+            e.printStackTrace();
+        }
     }
 
     private void cikisIslemi(ActionEvent event) {
         try {
-            Parent loginPage = FXMLLoader.load(getClass().getResource("login.fxml"));
+            // Login fxml yolunu düzelttik
+            Parent loginPage = FXMLLoader.load(getClass().getResource("/login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(loginPage));
             stage.show();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

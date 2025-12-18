@@ -1,20 +1,35 @@
 package com.proje.model;
 
-// PDF GEREKSİNİMİ: Abstract Sınıf
-public abstract class TakvimOlayi {
-    protected int id;
-    protected String baslik;
-    protected String tarih;
+import java.time.LocalDate;
 
-    public TakvimOlayi(int id, String baslik, String tarih) {
-        this.id = id;
+// PDF Gereksinimi: Abstract Class
+public abstract class TakvimOlayi {
+
+    // --- YENİ EKLENEN KISIM: ID ALANI ---
+    protected int id;
+
+    protected String baslik;
+    protected LocalDate tarih;
+
+    public TakvimOlayi(String baslik, LocalDate tarih) {
         this.baslik = baslik;
         this.tarih = tarih;
     }
 
-    // Abstract Metot: Her alt sınıf rengini kendi belirlemek ZORUNDA
-    public abstract String getRenkKodu();
+    // --- YENİ EKLENEN METOTLAR (ID için) ---
+    // GorevDAO'nun silme işlemi yapabilmesi için bu metotlar ŞART!
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    // Mevcut Getter Metotları
+    public LocalDate getTarih() { return tarih; }
     public String getBaslik() { return baslik; }
-    public String getTarih() { return tarih; }
+
+    // Abstract Metot
+    public abstract String getRenkKodu();
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="500.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: white; -fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.GunDetayController">
+
+    <Label fx:id="lblTarihBaslik" text="22 Aralık Pazartesi" textFill="#2d3447">
+        <font>
+            <Font name="System Bold" size="18.0" />
+        </font>
+    </Label>
+
+    <Label text="BUGÜNKÜ ETKİNLİKLER" textFill="#999999">
+        <font>
+            <Font size="10.0" />
+        </font>
+    </Label>
+
+    <ListView fx:id="listeEtkinlikler" prefHeight="150.0" prefWidth="360.0" style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e0e0;" />
+
+    <Label text="Yeni Ekle" textFill="#2d3447">
+        <font>
+            <Font name="System Bold" size="14.0" />
+        </font>
+        <VBox.margin>
+            <Insets top="10.0" />
+        </VBox.margin>
+    </Label>
+
+    <Label text="Birim Seçimi (Sadece Başkan)" textFill="#888888">
+        <font>
+            <Font size="10.0" />
+        </font>
+    </Label>
+
+    <HBox fx:id="boxBirimSecimi" alignment="CENTER_LEFT" managed="false" spacing="15.0" visible="false">
+        <children>
+            <RadioButton fx:id="rbSosyal" mnemonicParsing="false" text="Sosyal Medya" textFill="#800080">
+                <toggleGroup>
+                    <ToggleGroup fx:id="grupBirim" />
+                </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="rbEtkinlik" mnemonicParsing="false" text="Etkinlik" textFill="#4169E1" toggleGroup="$grupBirim" />
+        </children>
+        <VBox.margin>
+            <Insets bottom="5.0" />
+        </VBox.margin>
+    </HBox>
+    <Label text="Başlık" textFill="#555555" />
+    <TextField fx:id="txtBaslik" promptText="Etkinlik adı..." style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #ccc;" />
+
+    <Label text="Açıklama (Opsiyonel)" textFill="#555555" />
+    <TextArea fx:id="txtAciklama" prefHeight="60.0" prefWidth="360.0" promptText="Detaylar..." style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #ccc;" />
+
+    <Button fx:id="btnKaydet" mnemonicParsing="false" onAction="#btnKaydetTiklandi" prefWidth="360.0" style="-fx-background-color: #2D3447; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Kaydet">
+        <VBox.margin>
+            <Insets top="10.0" />
+        </VBox.margin>
+        <padding>
+            <Insets bottom="10.0" top="10.0" />
+        </padding>
+    </Button>
+
+</VBox>
