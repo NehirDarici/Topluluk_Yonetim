@@ -22,19 +22,16 @@ public class UyelerController {
     @FXML private TableColumn<BirimUyesi, String> colAd;
     @FXML private TableColumn<BirimUyesi, String> colRol;
     @FXML private TableColumn<BirimUyesi, Integer> colBirim;
-
-    // --- YENİ: Arama Kutusu (FXML ile bağladık) ---
     @FXML private TextField txtArama;
 
     private UserDAO userDAO = new UserDAO();
 
-    // 1. Ekranda Görünen Liste (Filtrelenmiş halini tutar)
+    // Ekranda Görünen Liste
     private ObservableList<BirimUyesi> gosterilenListe = FXCollections.observableArrayList();
 
-    // 2. Ana Veri Listesi (Veritabanındaki her şeyi tutar, arama yaparken buradan bakarız)
+    // Ana Veri Listesi - arama yapar.
     private List<BirimUyesi> anaVeriListesi;
 
-    // --- PDF Madde 5.1: Generic Sınıf Kullanımı ---
     private AramaMotoru<BirimUyesi> aramaMotoru = new AramaMotoru<>();
 
     @FXML
@@ -45,51 +42,47 @@ public class UyelerController {
         colRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
         colBirim.setCellValueFactory(new PropertyValueFactory<>("birimId"));
 
-        // Tabloyu observable listeye bağla
+        // Tabloyu observable listeye bağlar.
         tabloUyeler.setItems(gosterilenListe);
 
-        // Verileri ilk kez çek
+        // Verileri ilk kez çeker.
         verileriGetir();
     }
 
     private void verileriGetir() {
-        // Veritabanından her şeyi çekip "anaVeriListesi"ne atıyoruz (Yedek gibi düşün)
+        // Veritabanından her şeyi çekip "anaVeriListesi"ne atar.
         anaVeriListesi = userDAO.getTumKullanicilar();
-
-        // Ekrana da aynısını yansıtıyoruz (Başlangıçta hepsi görünür)
         gosterilenListe.clear();
         gosterilenListe.addAll(anaVeriListesi);
     }
 
-    // --- YENİ: ARAMA METODU (FXML'de onKeyReleased="#aramaYap") ---
+    // Arama yapmayı sağlayan metod
     @FXML
     void aramaYap(KeyEvent event) {
         String arananMetin = txtArama.getText();
 
-        // PDF Madde 4.3 (Interface) ve Lambda Kullanımı:
-        // Arama kuralını burada belirliyoruz.
+        // Arama kuralını burada belirtilir.
         IAramaKriteri<BirimUyesi> kriter = (uye, kelime) -> {
-
-            // PDF Madde 2.2: String Metotları (toLowerCase, contains, valueOf)
             String adSoyadKucuk = uye.getAdSoyad().toLowerCase();
             String noStr = String.valueOf(uye.getOgrenciNo());
 
-            // İsimde VEYA numarada geçiyorsa bulsun
+            // İsimde VEYA numarada geçiyorsa bulmasını sağlar.
             return adSoyadKucuk.contains(kelime) || noStr.contains(kelime);
         };
 
-        // Generic Arama Motorunu çalıştır
+        // Generic Arama Motorunu çalıştırılır.
         List<BirimUyesi> sonuc = aramaMotoru.ara(anaVeriListesi, arananMetin, kriter);
 
-        // Sonuçları tabloya bas
+        // Sonuçlar tabloya basılır.
         gosterilenListe.clear();
         gosterilenListe.addAll(sonuc);
     }
 
+    // Arama kutusunun içini temizler.
     @FXML
     void btnYenile(ActionEvent event) {
-        txtArama.clear(); // Arama kutusunu temizle
-        verileriGetir();  // Verileri tekrar çek
+        txtArama.clear();
+        verileriGetir();
     }
 
     @FXML
@@ -115,7 +108,7 @@ public class UyelerController {
             boolean silindi = userDAO.kullaniciSil(secilen.getId());
 
             if (silindi) {
-                // Hem ana listeden hem de ekrandaki listeden silmemiz lazım
+                // Hem ana listeden hem de ekrandaki listeden siler.
                 anaVeriListesi.remove(secilen);
                 gosterilenListe.remove(secilen);
             } else {

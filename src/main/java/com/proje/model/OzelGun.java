@@ -1,29 +1,27 @@
 package com.proje.model;
 
-import java.time.LocalDate; // 1. BU KÜTÜPHANEYİ EKLEMELİSİN
+import java.time.LocalDate;
 
+// Takvime özel günlerin yazılmasını sağlar.
 public class OzelGun extends TakvimOlayi {
-    private String tur; // "Sinav" veya "Tatil"
+    private String tur;
 
-    // 2. DEĞİŞİKLİK: 'String tarih' yerine 'LocalDate tarih' yaptık
+
     public OzelGun(int id, String baslik, LocalDate tarih, String tur) {
-
-        // 3. DEĞİŞİKLİK: 'id' parametresini sildik.
-        // Çünkü TakvimOlayi (Baba sınıf) sadece (baslik, tarih) istiyor.
+        // TakvimOlayi ile kalıtım yapılır.
         super(baslik, tarih);
-
         this.tur = tur;
     }
 
+    // Sınavlar için özel renk kodunun oluşturulması
     @Override
     public String getRenkKodu() {
-        // equalsIgnoreCase: Büyük-küçük harf hatasını önler ("sinav" yazsan da kabul eder)
         if (tur.equalsIgnoreCase("Sinav")) {
-            return "#FF0000"; // Kırmızı
+            return "#FF0000";
         }
-        return "#808080"; // Gri
+        return "#808080";
     }
 
-    // Getter eklemek istersen (İsteğe bağlı)
+    // Getter
     public String getTur() { return tur; }
 }

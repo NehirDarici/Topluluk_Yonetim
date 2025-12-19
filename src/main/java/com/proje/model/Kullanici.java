@@ -7,11 +7,11 @@ public abstract class Kullanici {
     private String sifre;
     private String rol;
 
-    // 1. Boş Constructor
+    // Boş Constructor
     public Kullanici() {
     }
 
-    // 2. Dolu Constructor (Overloading örneği)
+    // Dolu Constructor (Overloading örneği)
     public Kullanici(String ogrenciNo, String adSoyad, String sifre, String rol) {
         this.ogrenciNo=ogrenciNo;
         this.adSoyad = adSoyad;

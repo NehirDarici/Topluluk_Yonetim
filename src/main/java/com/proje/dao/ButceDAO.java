@@ -7,9 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Bu sınıfın amacı, bütçe kısmındaki işlemleri yapmaktır.
 public class ButceDAO {
 
-    // --- LİSTELEME ---
+    // Tüm kayıtlar listelenir.
     public List<ButceKaydi> tumKayitlariGetir() {
         List<ButceKaydi> liste = new ArrayList<>();
         String sql = "SELECT * FROM Butce ORDER BY id DESC";
@@ -19,15 +20,13 @@ public class ButceDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                // KRİTİK NOKTA: Veritabanındaki "SPONSORLUK" yazısını Enum'a çeviriyoruz.
-                // Eğer veritabanında hatalı veri varsa (örn: "Sponsorluk" küçük harfle), hata verir.
                 String turStr = rs.getString("tur");
                 IslemTuru turEnum;
 
                 try {
                     turEnum = IslemTuru.valueOf(turStr);
                 } catch (IllegalArgumentException e) {
-                    // Eğer veritabanında bozuk veri varsa varsayılan olarak DIGER yap
+                    // Eğer veritabanında bozuk veri varsa varsayılan olarak DIGER yapar.
                     turEnum = IslemTuru.DIGER;
                 }
 
@@ -45,12 +44,10 @@ public class ButceDAO {
         return liste;
     }
 
-    // DİKKAT: Metodun yanına 'throws SQLException' ekledik
-    // Try-Catch bloğunu kaldırdık ki hatayı Controller duysun.
+    // Bütçe tablosuna yeni girilen verileri ekler.
     public boolean ekle(String aciklama, double miktar, String tarih, IslemTuru tur) throws SQLException {
         String sql = "INSERT INTO Butce(aciklama, miktar, tarih, tur) VALUES(?, ?, ?, ?)";
 
-        // Try-with-resources (Otomatik kapatma)
         try (Connection conn = DBHelper.baglan();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -63,7 +60,7 @@ public class ButceDAO {
         }
     }
 
-    // --- SİLME ---
+    // Silme metoodu
     public boolean sil(int id) {
         String sql = "DELETE FROM Butce WHERE id = ?";
         try (Connection conn = DBHelper.baglan();

@@ -20,51 +20,57 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+//Bu sınıf takvim işlemlerini yapar.
+
 public class TakvimController {
 
     @FXML private Label lblAyYil;
     @FXML private GridPane takvimGrid;
-
-    // FXML dosyasındaki butonun ID'si btnEkle olmalı
     @FXML private Button btnEkle;
 
     private YearMonth suankiAy;
     private GorevDAO gorevDAO = new GorevDAO();
 
+    //Sayfa ilk açıldığında başlatılan metod
     @FXML
     public void initialize() {
         suankiAy = YearMonth.now();
 
-        // 1. Yetki kontrolü (Buton görünürlüğünü ayarlar)
+        // Yetki kontrolü (Buton görünürlüğünü ayarlar)
         yetkiKontroluYap();
 
-        // 2. Takvimi çiz
+        // Takvimi oluşturur.
         takvimiCiz();
     }
 
-    // --- BU KISIM GÜNCELLENDİ ---
+    // Giriş yapan kullanıcıya göre yetki veren metod
     private void yetkiKontroluYap() {
         BirimUyesi aktifKullanici = SessionManager.getInstance().getCurrentUser();
 
-        // Hata önleme: Kullanıcı düşmemişse veya buton FXML'de yoksa işlem yapma
         if (aktifKullanici == null || btnEkle == null) return;
 
-        String rol = aktifKullanici.getRol(); // "uye", "baskan" veya "topluluk_baskani"
+        // Giriş yapan kullanıcının rolünü öğrenir.
+        String rol = aktifKullanici.getRol();
 
-        // Eğer kullanıcı 'uye' ise Ekleme Butonunu gizle
+        // Eğer kullanıcı 'uye' ise Ekleme Butonunu gizler.
         if (rol.equals("uye")) {
             btnEkle.setVisible(false);
-            btnEkle.setManaged(false); // Ekranda boşluk bırakmasın, tamamen yok olsun
+            btnEkle.setManaged(false);
         } else {
             // Başkan ise butonu göster
             btnEkle.setVisible(true);
             btnEkle.setManaged(true);
         }
     }
+    /**
+     * Seçili ayın günlerini hesaplar ve GridPane üzerine kutucuklar (VBox) olarak ekler.
+     * Ayrıca veritabanından o aya ait görevleri çekip ilgili günün içine yerleştirir.
+     */
 
     private void takvimiCiz() {
         if (takvimGrid == null) return;
 
+        // Önceki çizimden kalma kutuları temizler.
         takvimGrid.getChildren().clear();
         lblAyYil.setText(suankiAy.getMonth().name() + " " + suankiAy.getYear());
 
@@ -73,7 +79,7 @@ public class TakvimController {
         int toplamGun = suankiAy.lengthOfMonth();
         int gunSayaci = 1;
 
-        // --- VERİTABANINDAN GÜNCEL VERİLERİ ÇEK ---
+        // Veritabanından güncel verileri çeker.
         List<TakvimOlayi> olayListesi = gorevDAO.getTumGorevler();
 
         // 6 Satır x 7 Sütun Döngüsü
@@ -87,7 +93,7 @@ public class TakvimController {
                     continue;
                 }
 
-                // --- GÜN KUTUSU TASARIMI ---
+                // Gün Kutularının Tasarımı
                 VBox kutu = new VBox();
                 kutu.setStyle("-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-width: 0.5; -fx-cursor: hand;");
                 kutu.setSpacing(2);
@@ -100,12 +106,13 @@ public class TakvimController {
                 lblGun.setStyle("-fx-font-weight: bold; -fx-padding: 5; -fx-text-fill: #555;");
                 kutu.getChildren().add(lblGun);
 
-                // --- GÖREVLERİ EKLEME ---
+                // Görevleri kutuya yerleştirme
                 LocalDate buGun = suankiAy.atDay(gunSayaci);
                 int gosterilenAdet = 0;
 
                 for (TakvimOlayi olay : olayListesi) {
                     if (olay.getTarih().isEqual(buGun)) {
+                        // Kutu taşmasın diye aynı kutuda sadece 2 görev
                         if (gosterilenAdet < 2) {
                             Label lblGorev = new Label(olay.getBaslik());
                             lblGorev.setStyle(
@@ -124,13 +131,14 @@ public class TakvimController {
                     }
                 }
 
+                // 2den fazla görev olan günler için
                 if (gosterilenAdet > 2) {
                     Label lblDahaFazla = new Label("+ " + (gosterilenAdet - 2) + " tane daha...");
                     lblDahaFazla.setStyle("-fx-font-size: 9px; -fx-text-fill: #888; -fx-padding: 0 0 0 5;");
                     kutu.getChildren().add(lblDahaFazla);
                 }
 
-                // --- TIKLAMA OLAYI ---
+                // Tıklama
                 final LocalDate tiklananTarih = buGun;
                 kutu.setOnMouseClicked(event -> {
                     detayPenceresiniAc(tiklananTarih);
@@ -142,6 +150,7 @@ public class TakvimController {
         }
     }
 
+    // Seçilen tarihe dair detay penceresini açar. Pencere kapandığında takvim otomatik güncellenir.
     private void detayPenceresiniAc(LocalDate tarih) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dialog_gun_detay.fxml"));
@@ -158,7 +167,7 @@ public class TakvimController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
-            // Pencere kapanınca takvimi yenile (Eklenen görevler görünsün)
+            // Pencere kapanınca takvimi yeniler.
             takvimiCiz();
 
         } catch (IOException e) {
@@ -167,6 +176,7 @@ public class TakvimController {
         }
     }
 
+    // Tarihler arasında gezinmeyi sağlayan metodlar
     @FXML
     void btnOncekiAy(ActionEvent event) {
         suankiAy = suankiAy.minusMonths(1);
@@ -179,10 +189,10 @@ public class TakvimController {
         takvimiCiz();
     }
 
-    // --- BAŞKANLAR İÇİN HIZLI EKLEME BUTONU ---
+    // Başkanların hızlı ekleme yapmasını sağlar.
     @FXML
     void btnEkleTiklandi(ActionEvent event) {
-        // "+ Yeni Görev" butonuna basınca bugünün tarihini açar
+        // "+ Yeni Görev" butonuna basınca bugünün tarihini açar.
         detayPenceresiniAc(LocalDate.now());
     }
 }

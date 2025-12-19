@@ -8,26 +8,24 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+// Bu sınıf birimlerin görev işlemlerini yapar.
 public class GorevDAO {
 
-    // --- ADIM 2: BİRİME ÖZEL TO-DO LİSTESİNİ GETİRME ---
-    // Etkinlik Üye/Başkan veya Sosyal Medya Üye/Başkan için ortak havuz sağlar
+    // Etkinlik Üye/Başkan veya Sosyal Medya Üye/Başkan için ortak havuz sağlar.
     public List<TakvimOlayi> getTodoGorevleriByBirim(int birimId) {
         List<TakvimOlayi> liste = new ArrayList<>();
-        // Sadece 'To-Do' türündeki ve belirli birime ait kayıtları seçiyoruz
+        // Sadece 'To-Do' türündeki ve belirli birime ait kayıtları seçilir.
         String sql = "SELECT * FROM Gorevler WHERE birim_id = ? AND tur = 'To-Do'";
 
         try (Connection conn = DatabaseUtility.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // PDF Madde 2.1: Wrapper Sınıf Kullanımı (int -> Integer)
             Integer wrappedBirimId = birimId;
             pstmt.setInt(1, wrappedBirimId);
 
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                // PDF Madde 4.1: Kalıtım ve Polimorfizm (BirimGorevi nesnesi oluşturuluyor)
                 BirimGorevi bg = new BirimGorevi(
                         rs.getString("baslik"),
                         LocalDate.parse(rs.getString("tarih")),
@@ -39,14 +37,12 @@ public class GorevDAO {
         } catch (SQLException e) {
             System.err.println("SQL Hatası (Birim To-Do): " + e.getMessage());
         } finally {
-            // PDF Madde 7: finally bloğu kullanımı
-            // Kaynaklar try-with-resources ile kapansa da kural gereği log amaçlı kullanıyoruz
             System.out.println("Bilgi: Birim ID " + birimId + " için To-Do sorgusu tamamlandı.");
         }
         return liste;
     }
 
-    // --- MEVCUT METOT: GÖREV SİLME ---
+    // Görev silme metodu
     public boolean gorevSil(int gorevId) {
         String sql = "DELETE FROM Gorevler WHERE gorev_id = ?";
 
@@ -63,7 +59,7 @@ public class GorevDAO {
         }
     }
 
-    // --- MEVCUT METOT: GÖREV EKLEME ---
+    // Görev ekleme metodu
     public boolean gorevEkle(String baslik, String aciklama, String tarih, String tur, int birimId) {
         String sql = "INSERT INTO Gorevler(baslik, aciklama, tarih, tur, birim_id) VALUES(?, ?, ?, ?, ?)";
 
@@ -83,7 +79,7 @@ public class GorevDAO {
         }
     }
 
-    // --- MEVCUT METOT: TÜM GÖREVLERİ GETİRME (Takvim İçin) ---
+    // Tüm görevleri listeleme
     public List<TakvimOlayi> getTumGorevler() {
         List<TakvimOlayi> liste = new ArrayList<>();
         String sql = "SELECT * FROM Gorevler";

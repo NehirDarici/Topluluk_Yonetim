@@ -19,36 +19,34 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-/**
- * PDF Madde 1.2: camelCase standartlarına uygun isimlendirmeler.
- * Hem Başkan hem de Üye bu sayfayı ortak bir havuz olarak kullanır.
- */
+// Bu sınıf, birime özel görevlerin listelenmesini, eklenmesini ve silinmesini yönetir.
+
 public class TodoController implements Initializable {
 
     @FXML private TextField txtYeniGorev;
     @FXML private DatePicker datePicker;
-
-    // DİKKAT: FXML dosyanızda bu alanın fx:id="txtNotlar" olduğundan emin olun!
     @FXML private TextArea txtNotlar;
 
     @FXML private ListView<TakvimOlayi> listeGorevler;
 
+    // JavaFX listesini veritabanı ile senkronize tutmak için ObservableList kullanılır
     private ObservableList<TakvimOlayi> gorevData = FXCollections.observableArrayList();
     private GorevDAO dao = new GorevDAO();
     private BirimUyesi aktifUye;
 
-    // PDF Madde 8: Dosya İşlemleri için dosya yolu değişkeni
+    // Dosya İşlemleri için dosya yolu değişkeni
     private String notDosyaYolu;
 
+    // Sayfa çalıştığında çalışan ilk metod
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1. Oturumdaki aktif kullanıcıyı al
+        // Oturumdaki aktif kullanıcıyı alınır.
         aktifUye = SessionManager.getInstance().getCurrentUser();
 
         if (listeGorevler != null) {
             listeGorevler.setItems(gorevData);
 
-            // Listenin hücre tasarımı (Tarih | Başlık)
+            // Listenin hücre tasarımı
             listeGorevler.setCellFactory(param -> new ListCell<TakvimOlayi>() {
                 @Override
                 protected void updateItem(TakvimOlayi olay, boolean empty) {
@@ -56,41 +54,40 @@ public class TodoController implements Initializable {
                     if (empty || olay == null) {
                         setText(null);
                     } else {
-                        // PDF Madde 6: Tarih formatı ve kullanımı
                         setText(olay.getTarih() + " | " + olay.getBaslik());
                     }
                 }
             });
         }
 
-        // 2. Birime özel görevleri veritabanından yükle
+        // Birime özel görevleri veritabanından yükler.
         listeyiYenile();
 
-        // --- YENİ EKLENEN KISIM: NOTLAR (DOSYA I/O) ---
+        // Dosya Giriş/Çıkış İşlemleri
         if (aktifUye != null && txtNotlar != null) {
-            // Her birim için farklı dosya oluşturuyoruz. Örn: notlar_birim_2.txt
+            // Her birim için farklı dosya oluşturulur.
             notDosyaYolu = "notlar_birim_" + aktifUye.getBirimId() + ".txt";
 
-            // 1. Eski notları dosyadan oku ve ekrana yaz
+            // Eski notları dosyadan okunur ve ekrana yazdırılır.
             notlariDosyadanOku();
 
-            // 2. Yazı değiştikçe otomatik kaydet (Listener)
+            // Yazı değiştikçe otomatik kaydedilir.
             txtNotlar.textProperty().addListener((observable, oldValue, newValue) -> {
                 notlariDosyayaKaydet(newValue);
             });
         }
     }
 
-    // --- PDF MADDE 8: DOSYA OKUMA İŞLEMİ ---
+    // Dosya Okuma İşlemleri
     private void notlariDosyadanOku() {
         try {
             Path yol = Paths.get(notDosyaYolu);
-            // Dosya varsa içeriğini oku
+            // Dosya varsa içeriğini okur.
             if (Files.exists(yol)) {
                 String icerik = Files.readString(yol);
                 txtNotlar.setText(icerik);
             } else {
-                // Dosya yoksa boş bir dosya oluştur (Hata almamak için)
+                // Dosya yoksa boş bir dosya oluşturur.
                 Files.createFile(yol);
             }
         } catch (IOException e) {
@@ -98,7 +95,7 @@ public class TodoController implements Initializable {
         }
     }
 
-    // --- PDF MADDE 8: DOSYA YAZMA İŞLEMİ ---
+    // Dosya Yazma İşlemi
     private void notlariDosyayaKaydet(String icerik) {
         try {
             Path yol = Paths.get(notDosyaYolu);
@@ -108,12 +105,12 @@ public class TodoController implements Initializable {
         }
     }
 
+    // String işlemleri ve veritabanına kaydetme işlemleri yapılır.
     @FXML
     void btnEkle(ActionEvent event) {
         try {
             String input = txtYeniGorev.getText();
 
-            // --- PDF MADDE 2.2: STRING METOTLARI KULLANIMI ---
             if (input == null || input.trim().isEmpty()) {
                 throw new GecersizGorevException("Görev başlığı boş olamaz!");
             }
@@ -130,7 +127,7 @@ public class TodoController implements Initializable {
 
             String formatliBaslik = temizInput.substring(0, 1).toUpperCase() + temizInput.substring(1).toLowerCase();
 
-            // --- TARİH AYARI ---
+            // Tarih ayarlanır.
             String tarihStr;
             if (datePicker != null && datePicker.getValue() != null) {
                 tarihStr = datePicker.getValue().toString();
@@ -138,7 +135,7 @@ public class TodoController implements Initializable {
                 tarihStr = LocalDate.now().toString();
             }
 
-            // --- VERİTABANINA EKLEME ---
+            // Veritabanına Ekleme
             if (aktifUye == null) return;
 
             boolean sonuc = dao.gorevEkle(formatliBaslik, "Birim To-Do Görevi", tarihStr, "To-Do", aktifUye.getBirimId());
@@ -183,7 +180,7 @@ public class TodoController implements Initializable {
         }
     }
 
-    // --- LİSTEYİ YENİLE ---
+    // Listeyi yenileyen metod
     private void listeyiYenile() {
         if (aktifUye == null) return;
 
@@ -191,7 +188,7 @@ public class TodoController implements Initializable {
         gorevData.addAll(dao.getTodoGorevleriByBirim(aktifUye.getBirimId()));
     }
 
-    // --- YARDIMCI METOTLAR ---
+    // Yardımcı Metodlar
     private void uyariGoster(String baslik, String mesaj) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(baslik);

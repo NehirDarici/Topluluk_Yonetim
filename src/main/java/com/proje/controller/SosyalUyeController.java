@@ -18,24 +18,36 @@ public class SosyalUyeController {
     @FXML
     private BorderPane anaIcerik;
 
+
+    // Controller çalıştığında bu mesajı verecek metod
     @FXML
     public void initialize() {
         System.out.println("✅ Sosyal Medya Üye Ekranı Yüklendi!");
     }
 
+    // Takvim butonuna tıklandığında takvim sayfasını aynı ekrana getirir.
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
         sayfaGetir("sayfa_takvim.fxml");
     }
 
+    // To-do list butonuna tıklandığında çalışır. Aynı zamanda sisteme log olarak kaydedilir.
     @FXML
     void btnToDoTiklandi(ActionEvent event) {
-        sayfaGetir("sayfa_todo.fxml");
+        try {
+            DosyaIslemleri.logEkle("Sosyal Medya Başkanı birim To-Do listesini görüntüledi.");
+
+            System.out.println("To-Do Listesi açılıyor...");
+            sayfaGetir("sayfa_todo.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    // Verilen FXML dosyasını yükler.
     private void sayfaGetir(String dosyaAdi) {
         try {
-            // Dosya adının başında '/' olduğundan emin oluyoruz
+            // Kaynak dosyanın yolunu belirleme
             String path = dosyaAdi.startsWith("/") ? dosyaAdi : "/" + dosyaAdi;
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
 
@@ -43,7 +55,6 @@ public class SosyalUyeController {
             Parent view = loader.load();
 
             if (anaIcerik != null) {
-                // BorderPane merkezine yerleştir
                 anaIcerik.setCenter(view);
             } else {
                 System.out.println("HATA: 'anaIcerik' null! FXML'de fx:id=\"anaIcerik\" kontrol et.");
@@ -54,11 +65,7 @@ public class SosyalUyeController {
         }
     }
 
-    @FXML
-    void btnDosyalarTiklandi(ActionEvent event) {
-        System.out.println("Sosyal Medya Üye: Dosya işlemleri butonuna basıldı.");
-    }
-
+    //Çıkış yap butonuna tıklandığında login ekranına döner.
     @FXML
     void btnCikisYap(ActionEvent event) {
         try {

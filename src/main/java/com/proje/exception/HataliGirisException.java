@@ -5,3 +5,5 @@ public class HataliGirisException extends Exception {
         super(mesaj);
     }
 }
+
+// Login ve veri doğrulama kısmındaki hatalar için kullanılmaktadır.

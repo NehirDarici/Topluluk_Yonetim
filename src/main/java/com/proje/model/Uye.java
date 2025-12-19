@@ -1,50 +1,50 @@
-package com.proje.model; // Paket ismine dikkat et
+package com.proje.model;
 
 import java.util.Objects;
 
+// Üye bilgilerinin alındığı sınıf
 public class Uye {
     private String ad;
     private String soyad;
-    private String tcNo;
-    private String rol; // Örn: Başkan, Üye, Sekreter
+    private String ogrenciNo;
+    private String rol;
 
-    // Constructor
-    public Uye(String ad, String soyad, String tcNo, String rol) {
+    // Üye bilgilerinin olduğu constructor
+    public Uye(String ad, String soyad, String ogrenciNo, String rol) {
         this.ad = ad;
         this.soyad = soyad;
-        this.tcNo = tcNo;
+        this.ogrenciNo = ogrenciNo;
         this.rol = rol;
     }
 
-    // --- Getter Metodları (Hataları Çözen Kısım) ---
+    // Getter Metodları
     public String getAd() { return ad; }
     public String getSoyad() { return soyad; }
-    public String getTcNo() { return tcNo; }
+    public String getOgrenciNo() { return ogrenciNo; }
     public String getRol() { return rol; }
 
-    // --- Setter Metodları ---
+    // Setter Metodları
     public void setAd(String ad) { this.ad = ad; }
     public void setSoyad(String soyad) { this.soyad = soyad; }
-    // TC No genellikle değiştirilmez ama gerekirse eklenebilir.
 
-    // toString: Nesneyi yazdırdığında anlamlı çıktı almak için
+    // Nesneyi yazdırdığında anlamlı çıktı almak için
     @Override
     public String toString() {
-        return "Üye: " + ad + " " + soyad + " (" + rol + ") - TC: " + tcNo;
+        return "Üye: " + ad + " " + soyad + " (" + rol + ") - No: " + ogrenciNo;
     }
 
-    // ÖNEMLİ: ArrayList içinde 'contains' metodunun doğru çalışması için gereklidir.
-    // İki üyenin TC numarası aynıysa, bu kişiler aynıdır mantığı:
+    // ArrayList içinde 'contains' metodunun doğru çalışması için gereklidir.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Uye uye = (Uye) o;
-        return Objects.equals(tcNo, uye.tcNo);
+        return Objects.equals(ogrenciNo, uye.ogrenciNo);
     }
 
+    // ogrenciNo bilgisini sonradan kullanmak üzere bir sayıyla eşleştirir.
     @Override
     public int hashCode() {
-        return Objects.hash(tcNo);
+        return Objects.hash(ogrenciNo);
     }
 }

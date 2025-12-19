@@ -7,9 +7,10 @@ import java.sql.*;
 import java.util.ArrayList; // Liste yapısı için gerekli
 import java.util.List;
 
+// Bu sınıfta kullanıcı işlemleri yapılır.
 public class UserDAO {
 
-    // 1. GİRİŞ YAPMA (LoginController kullanıyor)
+    // Kullanıcıların öğrenci no ve şifresinin eşleştiğinden emin olan metod
     public BirimUyesi loginUser(String ogrenciNo, String sifre) {
         BirimUyesi uye = null;
         String sql = "SELECT * FROM Kullanicilar WHERE ogrenci_no = ? AND sifre = ?";
@@ -32,7 +33,7 @@ public class UserDAO {
         return uye;
     }
 
-    // 2. TÜM KULLANICILARI LİSTELEME (UyelerController kullanıyor - HATA BURADA ÇÖZÜLÜYOR)
+    // Tüm kullanıcılar listelenir.
     public List<BirimUyesi> getTumKullanicilar() {
         List<BirimUyesi> uyeListesi = new ArrayList<>();
         String sql = "SELECT * FROM Kullanicilar";
@@ -42,7 +43,7 @@ public class UserDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                // Her satırı bir BirimUyesi nesnesine çevirip listeye atıyoruz
+                // Her satırı bir BirimUyesi nesnesine çevirip listeye atar.
                 uyeListesi.add(mapResultSetToUye(rs));
             }
         } catch (SQLException e) {
@@ -52,7 +53,7 @@ public class UserDAO {
         return uyeListesi;
     }
 
-    // 3. KULLANICI SİLME (UyelerController kullanıyor - DELETE işlemi)
+    // Kullanıcı silme işlemini yapan metod
     public boolean kullaniciSil(int id) {
         String sql = "DELETE FROM Kullanicilar WHERE kullanici_id = ?";
 
@@ -71,8 +72,7 @@ public class UserDAO {
         }
     }
 
-    // --- YARDIMCI METOT (Kod tekrarını önlemek için) ---
-    // Veritabanından gelen satırı Java Nesnesine çevirir.
+    // Yardımcı metod
     private BirimUyesi mapResultSetToUye(ResultSet rs) throws SQLException {
         return new BirimUyesi(
                 rs.getInt("kullanici_id"),
@@ -84,7 +84,7 @@ public class UserDAO {
         );
     }
 
-    // UserDAO.java dosyasına eklenecek metod:
+    // Şifre güncellemeyi sağlayan metod
     public boolean sifreGuncelle(String ogrenciNo, String yeniSifre) throws java.sql.SQLException {
         String sql = "UPDATE Kullanicilar SET sifre = ? WHERE ogrenci_no = ?";
         try (java.sql.Connection conn = com.proje.database.DBHelper.baglan();

@@ -6,12 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+// Veritabanlarının oluşturulduğu kısımdır.
 public class DBHelper {
-
-
+    // Veritabanı dosyasının yolu
     private static final String DB_URL = "jdbc:sqlite:topluluk_yonetim.db";
+
+    // static olmasının sebebi her defasında yeni bağlantı olmasını önlemek
     private static Connection connection;
 
+    // Veritabanına bağlanır.
     public static Connection baglan() {
         try {
             // Bağlantı kopmuşsa veya hiç açılmamışsa yeniden aç
@@ -24,6 +27,7 @@ public class DBHelper {
         return connection;
     }
 
+    // Açık olan bağlantıyı kapatır.
     public static void kapat() {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -34,6 +38,7 @@ public class DBHelper {
         }
     }
 
+    // Uygulama açıldığında tabloları kontrol eder. Eğer tablo boşsa başlangıç değerleri verir.
     public static void tablolariKontrolEt() {
         // Tablo Oluşturma Komutları
         String birimlerTablosu = "CREATE TABLE IF NOT EXISTS Birimler ("
@@ -51,7 +56,6 @@ public class DBHelper {
                 + "FOREIGN KEY(birim_id) REFERENCES Birimler(birim_id)"
                 + ");";
 
-        // GÜNCEL BÜTÇE TABLOSU (Enum String olarak tutuluyor)
         String butceTablosu = "CREATE TABLE IF NOT EXISTS Butce ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "aciklama TEXT NOT NULL, "
@@ -73,22 +77,22 @@ public class DBHelper {
         try (Connection conn = baglan();
              Statement stmt = conn.createStatement()) {
 
-            // Tabloları Oluştur
+            // Tabloları oluşturur.
             stmt.execute(birimlerTablosu);
             stmt.execute(kullanicilarTablosu);
             stmt.execute(butceTablosu);
             stmt.execute(duyuruTablosu);
             stmt.execute(gorevlerTablosu);
 
-            // --- İLK VERİLERİ YÜKLE (SEED DATA) ---
+            // İlk verilerin yüklenmesi
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM Kullanicilar");
             if (rs.next() && rs.getInt(1) == 0) {
                 System.out.println("Veritabanı boş, başlangıç verileri ekleniyor...");
 
-                // 1. Birimleri Ekle
+                // Birimleri ekler.
                 stmt.execute("INSERT INTO Birimler (birim_id, birim_adi) VALUES (1, 'Yonetim'), (2, 'Etkinlik'), (3, 'Sosyal Medya')");
 
-                // 2. Kullanıcıları Ekle
+                // Kullanıcıları ekler.
                 stmt.execute("INSERT INTO Kullanicilar (ogrenci_no, ad_soyad, sifre, rol, birim_id) VALUES ('2023001', 'Nehir Yılmaz', '12345', 'topluluk_baskani', 1)");
                 stmt.execute("INSERT INTO Kullanicilar (ogrenci_no, ad_soyad, sifre, rol, birim_id) VALUES ('2023010', 'Zeynep Yılmaz', '123', 'baskan', 2)");
                 stmt.execute("INSERT INTO Kullanicilar (ogrenci_no, ad_soyad, sifre, rol, birim_id) VALUES ('5643', 'Sude', '456', 'baskan', 3)");
