@@ -1,2 +1,33 @@
 [16-12-2025 22:13:15] Sistem başlatıldı.
 [16-12-2025 22:13:15] BAŞARILI GİRİŞ: Zeynep Yılmaz (2023010)
+[19-12-2025 13:32:54] mehmet görev ekledi: Etkinlik üyesi ekledi.
+[19-12-2025 13:33:47] Nehir Yılmaz görev ekledi: Başkan kendi sayfasına ekledi
+[19-12-2025 14:02:36] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[19-12-2025 14:02:45] sude [baskan] bir görev ekledi: Sosyal medya baskanı ekledi
+[19-12-2025 14:37:57] Zeynep Yılmaz [baskan] bir görev ekledi: Etkinlik başkanı ekledi
+[19-12-2025 14:38:00] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 14:38:03] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 14:42:11] hasan [uye] bir görev ekledi: Sosyal medya uyesi ekledi
+[19-12-2025 14:42:21] Sosyal Medya Üyesi oturumu kapattı.
+[19-12-2025 14:43:16] Nehir Yılmaz [topluluk_baskani] bir görev ekledi: Başkanlık işleri, anlarsın ya
+[19-12-2025 14:43:39] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 14:43:39] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 14:43:39] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 14:43:54] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 14:43:57] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 14:47:23] Sosyal Medya Üyesi oturumu kapattı.
+[19-12-2025 14:47:37] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[19-12-2025 14:47:43] sude [baskan] bir görev ekledi: Sosyal medya başkanı
+[19-12-2025 14:56:34] Sosyal Medya Üyesi oturumu kapattı.
+[19-12-2025 15:22:43] Nehir Yılmaz [topluluk_baskani] bir görev ekledi: Bit artık bit bit
+[19-12-2025 15:35:49] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[19-12-2025 15:36:28] Sosyal Medya Üyesi oturumu kapattı.
+[19-12-2025 15:37:15] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 16:04:50] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[19-12-2025 16:04:58] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[19-12-2025 16:05:00] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[19-12-2025 16:05:00] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[19-12-2025 16:05:16] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 16:05:45] Etkinlik Başkanı dosya işlemlerini başlattı.
+[19-12-2025 17:29:38] Sosyal Medya Üyesi oturumu kapattı.
+[19-12-2025 17:29:48] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.

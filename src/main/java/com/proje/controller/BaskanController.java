@@ -31,15 +31,25 @@ public class BaskanController {
         sayfaGetir("sayfa_todo.fxml");
     }
 
-    // --- DİĞER BUTONLAR ---
-    @FXML void btnGorevlerTiklandi(ActionEvent event) { System.out.println("Görevler (Boş)"); }
+    // --- ÜYE YÖNETİMİ BUTONU ---
     @FXML
     void btnUyelerTiklandi(ActionEvent event) {
         System.out.println("Üye Yönetimi Sayfası Yükleniyor...");
         sayfaGetir("sayfa_uyeler.fxml");
-    }    @FXML void btnDosyalarTiklandi(ActionEvent event) { System.out.println("Dosyalar (Boş)"); }
+    }
 
-    // --- SAYFA DEĞİŞTİRME MOTORU ---
+    // --- BÜTÇE YÖNETİMİ BUTONU (Eski Dosya İşlemleri) ---
+    // GÜNCELLEME BURADA YAPILDI: Artık Bütçe sayfasını açıyor.
+    @FXML
+    void btnDosyalarTiklandi(ActionEvent event) {
+        System.out.println("Bütçe Yönetimi açılıyor...");
+        sayfaGetir("sayfa_butce.fxml");
+    }
+
+    // --- DİĞER BUTONLAR ---
+    @FXML void btnGorevlerTiklandi(ActionEvent event) { System.out.println("Görevler (Boş)"); }
+
+    // --- SAYFA DEĞİŞTİRME MOTORU (Responsive Ayarlı) ---
     private void sayfaGetir(String dosyaAdi) {
         try {
             // 1. Ana İçerik Alanı Hazır mı?
@@ -51,13 +61,12 @@ public class BaskanController {
             // 2. Dosyayı Yükle
             System.out.println("Yükleniyor: " + dosyaAdi);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
-            Pane view = loader.load(); // Pane olarak alıyoruz ki boyut ayarı yapabilelim
+            Pane view = loader.load();
 
             // 3. TAM EKRAN YAPMA AYARI (Responsive)
             // Yüklenen sayfanın boyutunu, anaIcerik'in boyutuna bağlıyoruz (Bind)
             if (view instanceof Region) {
                 Region regionView = (Region) view;
-                // Genişlik ve Yükseklik sınırlarını kaldır
                 regionView.setMaxWidth(Double.MAX_VALUE);
                 regionView.setMaxHeight(Double.MAX_VALUE);
                 regionView.setPrefWidth(Region.USE_COMPUTED_SIZE);

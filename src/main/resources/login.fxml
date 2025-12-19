@@ -6,15 +6,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.LoginController">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.LoginController">
     <children>
-        <ImageView pickOnBounds="true" preserveRatio="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- 1. ARKA PLAN RESMİ -->
+        <!-- fitHeight ve fitWidth eklendi: Resmi pencere boyutuna zorlar -->
+        <!-- preserveRatio="false": Resmin oranını bozarak her yere uzamasını sağlar -->
+        <!-- AnchorPane...0.0: Resmi dört köşeye kilitler -->
+        <ImageView fitHeight="500.0" fitWidth="800.0" layoutX="-50.0" pickOnBounds="true" preserveRatio="false" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
             <image>
                 <Image url="@/background.jpg" />
             </image>
         </ImageView>
+
+        <!-- Hafif karartma efekti -->
         <Pane style="-fx-background-color: rgba(0,0,0,0.3);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 
+        <!-- 2. GİRİŞ PANELİ (SAĞ TARAFTA) -->
         <VBox alignment="CENTER" prefWidth="400.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 40;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Label text="HOŞ GELDİNİZ" textFill="#2c3e50">
@@ -47,16 +54,23 @@
                     <children>
                         <CheckBox mnemonicParsing="false" text="Beni Hatırla" textFill="#7f8c8d" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Hyperlink text="Şifremi Unuttum" textFill="#3498db" />
+                        <Hyperlink onAction="#btnSifremiUnuttumTiklandi" text="Şifremi Unuttum" textFill="#3498db" />
                     </children>
                 </HBox>
+
+                <!-- Durum Label'ı (Controller'da hata vermemesi için tuttuk, boş görünecek) -->
+                <Label fx:id="lblDurum" alignment="CENTER" maxWidth="Infinity" text="" wrapText="true">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
 
                 <Button fx:id="girisButon" maxWidth="Infinity" mnemonicParsing="false" onAction="#girisYap" prefHeight="45.0" style="-fx-background-color: #3498db; -fx-background-radius: 10; -fx-cursor: hand;" text="Giriş Yap" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                     <VBox.margin>
-                        <Insets top="10.0" />
+                        <Insets top="5.0" />
                     </VBox.margin>
                 </Button>
             </children>

@@ -1,5 +1,6 @@
 package com.proje.controller;
 
+import javafx.scene.layout.VBox;
 import com.proje.dao.GorevDAO;
 import com.proje.manager.SessionManager;
 import com.proje.model.BirimUyesi;
@@ -22,12 +23,12 @@ import java.util.Optional;
 public class GunDetayController {
 
     @FXML private Label lblTarihBaslik;
+    @FXML private VBox boxEklemeFormu; // Yeni eklediğimiz ana kutu
     @FXML private ListView<TakvimOlayi> listeEtkinlikler;
 
     // --- GÖREV EKLEME ALANLARI ---
     @FXML private TextField txtBaslik;
     @FXML private TextArea txtAciklama;
-    // FXML dosyasında butonuna fx:id="btnKaydet" verdiğinden emin olmalısın!
     @FXML private Button btnKaydet;
 
     // --- BAŞKAN SEÇİMİ KUTUSU ---
@@ -38,8 +39,6 @@ public class GunDetayController {
 
     private LocalDate secilenTarih;
     private GorevDAO gorevDAO = new GorevDAO();
-
-    // Yetki kontrol değişkeni
     private boolean yetkiVarMi = false;
 
     @FXML
@@ -47,38 +46,29 @@ public class GunDetayController {
         // --- 1. KULLANICI YETKİ KONTROLÜ ---
         BirimUyesi aktifUye = SessionManager.getInstance().getCurrentUser();
 
-        // Eğer kullanıcı varsa ve rolü 'uye' DEĞİLSE (yani baskan veya topluluk_baskani ise) yetki ver
+        // Rol "uye" değilse (baskan veya topluluk_baskani ise) yetki ver
         if (aktifUye != null && !aktifUye.getRol().equals("uye")) {
             yetkiVarMi = true;
         }
 
-        // --- 2. GÖRÜNÜRLÜK AYARLARI ---
-        if (!yetkiVarMi) {
-            // --- ÜYE İSE: Her şeyi gizle ---
-            if (txtBaslik != null) txtBaslik.setVisible(false);
-            if (txtAciklama != null) txtAciklama.setVisible(false);
+        // --- 2. GÖRÜNÜRLÜK AYARLARI (GÜNCELLENDİ) ---
+        if (boxEklemeFormu != null) {
+            // Yetki yoksa kutu komple gizlenir ve yer kaplamaz (Managed: false)
+            boxEklemeFormu.setVisible(yetkiVarMi);
+            boxEklemeFormu.setManaged(yetkiVarMi);
+        }
 
-            if (btnKaydet != null) {
-                btnKaydet.setVisible(false);
-                btnKaydet.setManaged(false); // Yer kaplamasın
-            }
-            if (boxBirimSecimi != null) {
-                boxBirimSecimi.setVisible(false);
-                boxBirimSecimi.setManaged(false);
-            }
-        } else {
-            // --- BAŞKAN İSE: ---
-            // Formlar görünür kalsın (Zaten varsayılan true)
-
-            // Sadece Genel Başkan (ID: 1) seçim kutusunu görsün
+        // Başkanlar için birim seçimi detayı
+        if (yetkiVarMi) {
+            // Sadece Genel Başkan (Birim ID: 1) seçim kutusunu görsün
             if (aktifUye != null && aktifUye.getBirimId() == 1) {
                 if (boxBirimSecimi != null) {
                     boxBirimSecimi.setVisible(true);
                     boxBirimSecimi.setManaged(true);
-                    rbEtkinlik.setSelected(true); // Varsayılan seçim
+                    rbEtkinlik.setSelected(true);
                 }
             } else {
-                // Diğer başkanlar (Etkinlik, Sosyal) seçim yapamaz, kendi birimine ekler
+                // Diğer birim başkanları seçim yapamaz
                 if (boxBirimSecimi != null) {
                     boxBirimSecimi.setVisible(false);
                     boxBirimSecimi.setManaged(false);
@@ -99,24 +89,19 @@ public class GunDetayController {
                             setText(null);
                             setGraphic(null);
                         } else {
-                            // A) Renk Kutucuğu
                             Region renkKutu = new Region();
                             renkKutu.setPrefSize(10, 10);
                             renkKutu.setStyle("-fx-background-color: " + olay.getRenkKodu() + "; -fx-background-radius: 5;");
 
-                            // B) Görev Başlığı
                             Label lblBaslik = new Label(olay.getBaslik());
                             lblBaslik.setStyle("-fx-font-weight: bold; -fx-text-fill: #333;");
 
-                            // C) Boşluk (İtme kuvveti)
                             Region bosluk = new Region();
                             HBox.setHgrow(bosluk, Priority.ALWAYS);
 
-                            // D) Satır Dizilimi
                             HBox satir = new HBox(10, renkKutu, lblBaslik, bosluk);
 
-                            // *** SİL BUTONU KONTROLÜ ***
-                            // Sadece yetki varsa (Başkan ise) butonu ekle
+                            // Sadece yetki varsa sil butonu ekle
                             if (yetkiVarMi) {
                                 Button btnSil = new Button("Sil");
                                 btnSil.setStyle("-fx-background-color: #ffe6e6; -fx-text-fill: red; -fx-background-radius: 5; -fx-cursor: hand; -fx-font-size: 11px;");
@@ -147,7 +132,7 @@ public class GunDetayController {
             } else {
                 Alert hata = new Alert(Alert.AlertType.ERROR);
                 hata.setTitle("Hata");
-                hata.setHeaderText("Silinemedi! ID hatası olabilir.");
+                hata.setHeaderText("Silinemedi!");
                 hata.show();
             }
         }
@@ -172,7 +157,6 @@ public class GunDetayController {
 
     @FXML
     void btnKaydetTiklandi(ActionEvent event) {
-        // Güvenlik önlemi: Üye butonu bir şekilde görse bile çalışmasın
         if (!yetkiVarMi) return;
 
         String baslik = txtBaslik.getText();
@@ -190,24 +174,14 @@ public class GunDetayController {
         int hedefBirimId = 0;
 
         if (aktifUye != null) {
-            // --- GENEL BAŞKAN İSE (ID=1) ---
             if (aktifUye.getBirimId() == 1) {
-                if (rbSosyal.isSelected()) {
-                    hedefBirimId = 3;
-                } else {
-                    hedefBirimId = 2;
-                }
+                hedefBirimId = rbSosyal.isSelected() ? 3 : 2;
             } else {
-                // --- BİRİM BAŞKANI İSE ---
-                // Kendi birim ID'sini otomatik al
                 hedefBirimId = aktifUye.getBirimId();
             }
         }
 
-        // Veritabanına Ekle
         gorevDAO.gorevEkle(baslik, aciklama, secilenTarih.toString(), "Gorev", hedefBirimId);
-
-        // Ekranı kapat
         Stage stage = (Stage) txtBaslik.getScene().getWindow();
         stage.close();
     }

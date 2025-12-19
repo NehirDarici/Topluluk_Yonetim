@@ -1,5 +1,6 @@
 package com.proje.controller;
 
+import com.proje.dosya.DosyaIslemleri;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,63 +8,74 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane; // StackPane import edildi
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 
 public class SosyalBaskanController {
 
     @FXML
+    private StackPane anaIcerik; // FXML'deki fx:id="anaIcerik" ile birebir aynı olmalı
+
+    @FXML
     public void initialize() {
         System.out.println("✅ Sosyal Medya Birim Başkanı Paneli Yüklendi!");
     }
 
-    // DÜZELTME 1: FXML'deki yapı StackPane olduğu için türü düzelttik
-    @FXML
-    private StackPane anaIcerik;
-
     // --- TAKVİM BUTONU ---
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
-        System.out.println("Takvim açılıyor...");
         sayfaGetir("sayfa_takvim.fxml");
     }
 
-    // --- TO-DO LIST BUTONU ---
+    // --- TO-DO LIST BUTONU (Birim Paylaşımlı) ---
     @FXML
     void btnToDoTiklandi(ActionEvent event) {
-        System.out.println("To-Do Listesi açılıyor...");
-        sayfaGetir("sayfa_todo.fxml");
+        try {
+            // PDF Madde 8: Loglama (I/O)
+            DosyaIslemleri.logEkle("Sosyal Medya Başkanı birim To-Do listesini görüntüledi.");
+
+            System.out.println("To-Do Listesi açılıyor...");
+            sayfaGetir("sayfa_todo.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // --- DİĞER BUTONLAR ---
-    @FXML void btnUyelerTiklandi(ActionEvent event) { System.out.println("Üyeler tıklandı (Boş)"); }
-    @FXML void btnGorevlerTiklandi(ActionEvent event) { System.out.println("Görevler tıklandı (Boş)"); }
-    @FXML void btnDosyalarTiklandi(ActionEvent event) { System.out.println("Dosyalar tıklandı (Boş)"); }
-
-    // --- ÇIKIŞ YAP ---
     @FXML
-    void btnCikisYap(ActionEvent event) {
-        cikisIslemi(event);
+    void btnUyelerTiklandi(ActionEvent event) {
+        sayfaGetir("sayfa_uyeler.fxml");
+    }
+
+    @FXML
+    void btnDosyalarTiklandi(ActionEvent event) {
+        System.out.println("Dosya işlemleri tıklandı.");
+        // İleride buraya sayfa_dosyalar.fxml gelecek
     }
 
     // --- SAYFA GETİRME MOTORU ---
     private void sayfaGetir(String dosyaAdi) {
         try {
-            // Dosya yoluna '/' ekledik
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
             Pane view = loader.load();
 
             if (anaIcerik != null) {
-                // DÜZELTME 2: StackPane 'setCenter' desteklemez.
-                // İçindekileri temizleyip (clear) yenisini ekliyoruz (addAll)
+                // StackPane'de setCenter yoktur, bu yüzden temizleyip ekliyoruz
                 anaIcerik.getChildren().clear();
                 anaIcerik.getChildren().add(view);
+            } else {
+                System.out.println("HATA: 'anaIcerik' (StackPane) null! FXML dosyasında fx:id kontrol et.");
             }
         } catch (IOException e) {
-            System.out.println("HATA: " + dosyaAdi + " yüklenemedi! Dosya ismini kontrol et.");
+            System.out.println("HATA: " + dosyaAdi + " yüklenemedi!");
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    void btnCikisYap(ActionEvent event) {
+        cikisIslemi(event);
     }
 
     private void cikisIslemi(ActionEvent event) {

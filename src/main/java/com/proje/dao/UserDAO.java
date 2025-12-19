@@ -83,4 +83,15 @@ public class UserDAO {
                 rs.getInt("birim_id") // Senin 6. parametren
         );
     }
+
+    // UserDAO.java dosyasına eklenecek metod:
+    public boolean sifreGuncelle(String ogrenciNo, String yeniSifre) throws java.sql.SQLException {
+        String sql = "UPDATE Kullanicilar SET sifre = ? WHERE ogrenci_no = ?";
+        try (java.sql.Connection conn = com.proje.database.DBHelper.baglan();
+             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, yeniSifre);
+            pstmt.setString(2, ogrenciNo);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
 }

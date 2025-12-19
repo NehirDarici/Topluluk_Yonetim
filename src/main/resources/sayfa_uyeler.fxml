@@ -12,7 +12,9 @@
 <?import javafx.scene.text.Font?>
 
 <!-- Ana Kapsayıcı: Hafif Gri Arka Plan -->
-<VBox prefHeight="600.0" prefWidth="800.0" spacing="20.0" style="-fx-background-color: #F4F7FA; -fx-padding: 30;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.UyelerController">
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="20.0" style="-fx-background-color: #F4F7FA; -fx-padding: 30;"
+      stylesheets="@style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.proje.controller.UyelerController">
 
     <!-- ÜST BAŞLIK ALANI -->
     <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -21,68 +23,75 @@
                 <children>
                     <Label text="Üye Yönetimi" textFill="#2d3447">
                         <font>
-                            <Font name="Segoe UI Bold" size="26.0" />
+                            <Font name="Segoe UI Bold" size="26.0"/>
                         </font>
                     </Label>
                     <Label text="Kulübe kayıtlı üyeleri inceleyin ve yönetin." textFill="#838383">
                         <font>
-                            <Font name="Segoe UI" size="14.0" />
+                            <Font name="Segoe UI" size="14.0"/>
                         </font>
                     </Label>
                 </children>
             </VBox>
-            <Region HBox.hgrow="ALWAYS" />
+            <Region HBox.hgrow="ALWAYS"/>
 
             <!-- Arama Kutusu (Görsel Modernlik İçin) -->
             <!-- Arama Kutusu -->
-            <TextField fx:id="txtArama" onKeyReleased="#aramaYap" promptText="Üye ara..." style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;">
+            <TextField fx:id="txtArama" onKeyReleased="#aramaYap" promptText="Üye ara..."
+                       style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;">
                 <font>
-                    <Font size="13.0" />
+                    <Font size="13.0"/>
                 </font>
             </TextField>
         </children>
     </HBox>
 
     <!-- BEYAZ KART (Tabloyu Tutan Alan) -->
-    <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" VBox.vgrow="ALWAYS">
+    <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);"
+          VBox.vgrow="ALWAYS">
         <children>
 
             <!-- TABLO -->
-            <TableView fx:id="tabloUyeler" prefHeight="200.0" prefWidth="200.0" styleClass="modern-table" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tabloUyeler" prefHeight="200.0" prefWidth="200.0" styleClass="modern-table"
+                       VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="colNo" prefWidth="120.0" text="Öğrenci No" />
-                    <TableColumn fx:id="colAd" prefWidth="200.0" text="Ad Soyad" />
-                    <TableColumn fx:id="colRol" prefWidth="120.0" text="Rol" />
-                    <TableColumn fx:id="colBirim" prefWidth="100.0" text="Birim" />
+                    <TableColumn fx:id="colNo" prefWidth="120.0" text="Öğrenci No"/>
+                    <TableColumn fx:id="colAd" prefWidth="200.0" text="Ad Soyad"/>
+                    <TableColumn fx:id="colRol" prefWidth="120.0" text="Rol"/>
+                    <TableColumn fx:id="colBirim" prefWidth="100.0" text="Birim"/>
                 </columns>
                 <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                 </columnResizePolicy>
             </TableView>
         </children>
         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
         </padding>
     </VBox>
 
     <!-- ALT AKSİYON BUTONLARI -->
     <HBox alignment="CENTER_RIGHT" spacing="15.0">
         <children>
-            <Button mnemonicParsing="false" onAction="#btnYenile" style="-fx-background-color: #ffffff; -fx-text-fill: #3498db; -fx-border-color: #3498db; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;" text="Listeyi Yenile">
+            <Button mnemonicParsing="false" onAction="#btnYenile"
+                    style="-fx-background-color: #ffffff; -fx-text-fill: #3498db; -fx-border-color: #3498db; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"
+                    text="Listeyi Yenile">
                 <padding>
-                    <Insets bottom="8.0" left="20.0" right="20.0" top="8.0" />
+                    <Insets bottom="8.0" left="20.0" right="20.0" top="8.0"/>
                 </padding>
                 <font>
-                    <Font name="System Bold" size="12.0" />
+                    <Font name="System Bold" size="12.0"/>
                 </font>
             </Button>
 
-            <Button mnemonicParsing="false" onAction="#btnSil" style="-fx-background-color: #FF6B6B; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;" text="Seçili Üyeyi Sil">
+            <Button mnemonicParsing="false" onAction="#btnSil"
+                    style="-fx-background-color: #FF6B6B; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"
+                    text="Seçili Üyeyi Sil">
                 <padding>
-                    <Insets bottom="9.0" left="20.0" right="20.0" top="9.0" />
+                    <Insets bottom="9.0" left="20.0" right="20.0" top="9.0"/>
                 </padding>
                 <font>
-                    <Font name="System Bold" size="12.0" />
+                    <Font name="System Bold" size="12.0"/>
                 </font>
             </Button>
         </children>
