@@ -15,7 +15,7 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         try {
             // 1. Önce Veritabanını Hazırla (Tablolar yoksa oluşturur)
-            DBHelper.tablolariOlustur();
+
 
             // 2. Login FXML Dosyasını Yükle
             // Dosya yolunun başında '/' olduğuna emin ol (resources kök dizini için)

@@ -1,106 +1,86 @@
 package com.proje.dao;
 
-import com.proje.interfaces.IUserService;
-import com.proje.model.BirimBaskani;
+import com.proje.database.DBHelper;
 import com.proje.model.BirimUyesi;
-import com.proje.utility.DatabaseUtility;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.ArrayList; // Liste yapısı için gerekli
 import java.util.List;
 
-public class UserDAO implements IUserService {
+public class UserDAO {
 
-    // ARTIK BURADA "DB_URL" veya "connect()" metoduna gerek yok!
-    // DatabaseUtility sınıfını kullanacağız.
-
-    @Override
-    public boolean addUser(BirimUyesi uye) {
-        String sql = "INSERT INTO Kullanicilar(ogrenci_no, ad_soyad, sifre, rol, birim_id) VALUES(?,?,?,?,?)";
-
-        // DİKKAT: 'this.connect()' yerine 'DatabaseUtility.connect()' yazdık
-        try (Connection conn = DatabaseUtility.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, uye.getOgrenciNo());
-            pstmt.setString(2, uye.getAdSoyad());
-            pstmt.setString(3, uye.getSifre());
-            pstmt.setString(4, uye.getRol());
-            pstmt.setInt(5, uye.getBirimId());
-            pstmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public BirimUyesi loginUser(String no, String sifre) {
+    // 1. GİRİŞ YAPMA (LoginController kullanıyor)
+    public BirimUyesi loginUser(String ogrenciNo, String sifre) {
+        BirimUyesi uye = null;
         String sql = "SELECT * FROM Kullanicilar WHERE ogrenci_no = ? AND sifre = ?";
 
-        // DİKKAT: 'DatabaseUtility.connect()' kullanıldı
-        try (Connection conn = DatabaseUtility.connect();
+        try (Connection conn = DBHelper.baglan();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, no);
+            pstmt.setString(1, ogrenciNo);
             pstmt.setString(2, sifre);
-            ResultSet rs = pstmt.executeQuery();
 
-            if (rs.next()) {
-                String rol = rs.getString("rol");
-                // Polymorphism
-                if (rol.contains("baskan")) {
-                    return new BirimBaskani(rs.getInt("kullanici_id"), rs.getString("ogrenci_no"), rs.getString("ad_soyad"), rs.getString("sifre"), rol, rs.getInt("birim_id"));
-                } else {
-                    return new BirimUyesi(rs.getInt("kullanici_id"), rs.getString("ogrenci_no"), rs.getString("ad_soyad"), rs.getString("sifre"), rol, rs.getInt("birim_id"));
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    uye = mapResultSetToUye(rs);
                 }
             }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return null;
+        } catch (SQLException e) {
+            System.out.println("Login Hatası: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return uye;
     }
 
-    // --- YENİ EKLENEN METOTLAR ---
-
-    // 1. Tüm Kullanıcıları Listeleme (TableView için)
+    // 2. TÜM KULLANICILARI LİSTELEME (UyelerController kullanıyor - HATA BURADA ÇÖZÜLÜYOR)
     public List<BirimUyesi> getTumKullanicilar() {
-        List<BirimUyesi> liste = new ArrayList<>();
+        List<BirimUyesi> uyeListesi = new ArrayList<>();
         String sql = "SELECT * FROM Kullanicilar";
 
-        try (Connection conn = DatabaseUtility.connect();
+        try (Connection conn = DBHelper.baglan();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                BirimUyesi uye = new BirimUyesi(
-                        rs.getInt("kullanici_id"),
-                        rs.getString("ogrenci_no"),
-                        rs.getString("ad_soyad"),
-                        rs.getString("sifre"),
-                        rs.getString("rol"),
-                        rs.getInt("birim_id")
-                );
-                liste.add(uye);
+                // Her satırı bir BirimUyesi nesnesine çevirip listeye atıyoruz
+                uyeListesi.add(mapResultSetToUye(rs));
             }
         } catch (SQLException e) {
+            System.out.println("Listeleme Hatası: " + e.getMessage());
             e.printStackTrace();
         }
-        return liste;
+        return uyeListesi;
     }
 
-    // 2. Kullanıcı Silme
+    // 3. KULLANICI SİLME (UyelerController kullanıyor - DELETE işlemi)
     public boolean kullaniciSil(int id) {
         String sql = "DELETE FROM Kullanicilar WHERE kullanici_id = ?";
-        try (Connection conn = DatabaseUtility.connect();
+
+        try (Connection conn = DBHelper.baglan();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
-            int etkilenen = pstmt.executeUpdate();
-            return etkilenen > 0; // Silme başarılıysa true döner
+
+            // executeUpdate etkilenen satır sayısını döner. 0'dan büyükse silinmiştir.
+            int etkilenenSatir = pstmt.executeUpdate();
+            return etkilenenSatir > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Silme Hatası: " + e.getMessage());
             return false;
         }
+    }
+
+    // --- YARDIMCI METOT (Kod tekrarını önlemek için) ---
+    // Veritabanından gelen satırı Java Nesnesine çevirir.
+    private BirimUyesi mapResultSetToUye(ResultSet rs) throws SQLException {
+        return new BirimUyesi(
+                rs.getInt("kullanici_id"),
+                rs.getString("ogrenci_no"),
+                rs.getString("ad_soyad"),
+                rs.getString("sifre"),
+                rs.getString("rol"),
+                rs.getInt("birim_id") // Senin 6. parametren
+        );
     }
 }

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.UyeController">
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.SosyalUyeController">
     <left>
         <VBox prefHeight="200.0" prefWidth="170.0" style="-fx-background-color: #2D3447;" BorderPane.alignment="CENTER">
             <children>
@@ -13,6 +13,7 @@
                 <Button layoutX="10.0" layoutY="89.0" mnemonicParsing="false" onAction="#btnDosyalarTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Dosya İşlemleri" />
                 <Region prefHeight="317.0" prefWidth="170.0" />
                 <Button layoutX="10.0" layoutY="116.0" mnemonicParsing="false" onAction="#btnCikisYap" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: red; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Çıkış Yap" textFill="#262525" />
+                <Button layoutX="10.0" layoutY="170.0" mnemonicParsing="false" onAction="#btnDosyalarTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Sosyal Medya Üye" />
             </children>
         </VBox>
     </left>
