@@ -1,17 +1,20 @@
 package com.proje.model;
 
 public class BirimUyesi {
+    //'private' yapsaydık, bu sınıftan türeyen 'BirimBaskani' bu verilere doğrudan erişemezdi.
 
     // Veritabanı sütunlarına karşılık gelen değişkenler
-    protected int id;
+    // PROTECTED sayesinde miras alınanlar için rahatlıkla kullanırlar
+    protected int id;   //veritabanında satır numarası
     protected String ogrenciNo;
     protected String adSoyad;
     protected String sifre;
     protected String rol;
-    protected int birimId; // Bu alan yönlendirme (LoginController) için kritiktir
+    protected int birimId; // Bu alan yönlendirmeyi sağlar
 
-    // --- 6 PARAMETRELİ CONSTRUCTOR (UserDAO Hatasını Çözen Kısım) ---
-    // UserDAO sınıfında 'new BirimUyesi(...)' dediğinde burası çalışır.
+    //userDAO sınıfı veritabanından veriyi çektiğinde bu metodu kullanır.
+    //veri tabanından gelen bilgileri alır, tek bir BirimUyesi paketi haline getirir
+
     public BirimUyesi(int id, String ogrenciNo, String adSoyad, String sifre, String rol, int birimId) {
         this.id = id;
         this.ogrenciNo = ogrenciNo;
@@ -21,7 +24,10 @@ public class BirimUyesi {
         this.birimId = birimId;
     }
 
-    // --- Getter Metotları (Verilere erişmek için) ---
+    /* Dışarıdaki sınıflar (controller kısımları) bu üyenin bilgilerini
+    öğrenmek istediğinde bunları kullanır
+     */
+
     public int getId() {
         return id;
     }
@@ -39,7 +45,7 @@ public class BirimUyesi {
     }
 
     public String getRol() {
-        return rol;
+        return rol; // yetki kontrolü sürecinde lazım( admin paneline girebilme durumu)
     }
 
     // LoginController'da 'if (user.getBirimId() == 2)' kontrolü için gerekli:
@@ -47,7 +53,9 @@ public class BirimUyesi {
         return birimId;
     }
 
-    // Opsiyonel: Setterlar (İleride güncelleme yapmak istersen diye)
+    // Üye profilini düzenlemek isterse bu metotlar kullanılır.
+    // ID ve OgrenciNo için Setter yok, çünkü onlar genelde değişmez.
+
     public void setAdSoyad(String adSoyad) {
         this.adSoyad = adSoyad;
     }
@@ -56,7 +64,9 @@ public class BirimUyesi {
         this.sifre = sifre;
     }
 
-    // Test amaçlı yazdırma metodu
+
+    //DeBug için kullanılan kısımm, hata çıkarsa doğru bir üyeyi çekip çekilmediğini anlamak için kullanılrı
+
     @Override
     public String toString() {
         return "BirimUyesi{" +

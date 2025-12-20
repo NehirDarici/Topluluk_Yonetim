@@ -20,10 +20,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+//GİREN KİŞİ KİM ONA GÖRE ekle sil butonlarını görür
+
 public class GunDetayController {
 
+    //ekrandaki nesneler
+//pencerenin tepesindeki başlık
     @FXML private Label lblTarihBaslik;
-    @FXML private VBox boxEklemeFormu; // Yeni eklediğimiz ana kutu
+    //görev ekleme kutusu
+    @FXML private VBox boxEklemeFormu;
+    //o günün görevlerinin listelendiği alan
     @FXML private ListView<TakvimOlayi> listeEtkinlikler;
 
     // --- GÖREV EKLEME ALANLARI ---
@@ -31,19 +37,24 @@ public class GunDetayController {
     @FXML private TextArea txtAciklama;
     @FXML private Button btnKaydet;
 
-    // --- BAŞKAN SEÇİMİ KUTUSU ---
+    // --- BAŞKAN SEÇİMİ KUTUSU --- radyo butonları
+    //ıd 1 ise görünecek ekran
     @FXML private HBox boxBirimSecimi;
     @FXML private RadioButton rbSosyal;
     @FXML private RadioButton rbEtkinlik;
     @FXML private ToggleGroup grupBirim;
 
+    //Değişkenler
+
     private LocalDate secilenTarih;
     private GorevDAO gorevDAO = new GorevDAO();
+    //bu kişi ekleme silme yapabilir mi
     private boolean yetkiVarMi = false;
 
+    //pencere açılırken çalışan ayarlar
     @FXML
     public void initialize() {
-        // --- 1. KULLANICI YETKİ KONTROLÜ ---
+        //  KULLANICI YETKİ KONTROLÜ --- usersession ile bulunur
         BirimUyesi aktifUye = SessionManager.getInstance().getCurrentUser();
 
         // Rol "uye" değilse (baskan veya topluluk_baskani ise) yetki ver
@@ -51,7 +62,7 @@ public class GunDetayController {
             yetkiVarMi = true;
         }
 
-        // --- 2. GÖRÜNÜRLÜK AYARLARI (GÜNCELLENDİ) ---
+        // -Yetkiye göre gizle-göster
         if (boxEklemeFormu != null) {
             // Yetki yoksa kutu komple gizlenir ve yer kaplamaz (Managed: false)
             boxEklemeFormu.setVisible(yetkiVarMi);
@@ -76,7 +87,8 @@ public class GunDetayController {
             }
         }
 
-        // --- 3. LİSTE TASARIMI (Sil Butonu Mantığı) ---
+        // LİSTE TASARIMI (Sil Butonu Mantığı)
+        //listview normalde sadece yazı gösterir.biz ona her satırı özel tasarla diyoruz
         listeEtkinlikler.setCellFactory(new Callback<ListView<TakvimOlayi>, ListCell<TakvimOlayi>>() {
             @Override
             public ListCell<TakvimOlayi> call(ListView<TakvimOlayi> param) {
@@ -85,10 +97,13 @@ public class GunDetayController {
                     protected void updateItem(TakvimOlayi olay, boolean empty) {
                         super.updateItem(olay, empty);
 
+                        //eğer satır boşsa yani veri yoksa temizle
                         if (empty || olay == null) {
                             setText(null);
                             setGraphic(null);
                         } else {
+
+                            //satır tasarımı-> birim rengine göre
                             Region renkKutu = new Region();
                             renkKutu.setPrefSize(10, 10);
                             renkKutu.setStyle("-fx-background-color: " + olay.getRenkKodu() + "; -fx-background-radius: 5;");
@@ -108,7 +123,7 @@ public class GunDetayController {
                                 btnSil.setOnAction(event -> silmeIslemiYap(olay));
                                 satir.getChildren().add(btnSil);
                             }
-
+                            //hazırladığımız tasarımı satıra yerleştir
                             satir.setAlignment(Pos.CENTER_LEFT);
                             setGraphic(satir);
                             setText(null);
@@ -118,8 +133,10 @@ public class GunDetayController {
             }
         });
     }
+    //SİLME İŞLEMİ
 
     private void silmeIslemiYap(TakvimOlayi olay) {
+        //emin misin diye soran kutu
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Sil");
         alert.setHeaderText("Siliniyor: " + olay.getBaslik());
@@ -127,8 +144,9 @@ public class GunDetayController {
 
         Optional<ButtonType> sonuc = alert.showAndWait();
         if (sonuc.isPresent() && sonuc.get() == ButtonType.OK) {
+            //veritabanından sil
             if (gorevDAO.gorevSil(olay.getId())) {
-                listeyiGuncelle();
+                listeyiGuncelle(); //listeyi yenile
             } else {
                 Alert hata = new Alert(Alert.AlertType.ERROR);
                 hata.setTitle("Hata");
@@ -137,27 +155,34 @@ public class GunDetayController {
             }
         }
     }
-
+    //DIŞARIDAN VERİ ALMA
+    //ana takvim sayfası tıklanılan tarihi buraya gönderir
     public void veriYukle(LocalDate tarih) {
         this.secilenTarih = tarih;
+        //tarihi istenilen formatta yaz
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        //o tarihteki verileri çek
         lblTarihBaslik.setText(tarih.format(format));
         listeyiGuncelle();
     }
 
+    //Listeyi Yenileme
     private void listeyiGuncelle() {
         listeEtkinlikler.getItems().clear();
+        //tüm görevleri getir
         List<TakvimOlayi> tumOlaylar = gorevDAO.getTumGorevler();
+
+        //sadece seçili tarihe ait olanları filtrele
         for (TakvimOlayi olay : tumOlaylar) {
             if (olay.getTarih().isEqual(secilenTarih)) {
                 listeEtkinlikler.getItems().add(olay);
             }
         }
     }
-
+  //YENİ GÖREV KAYDETME
     @FXML
     void btnKaydetTiklandi(ActionEvent event) {
-        if (!yetkiVarMi) return;
+        if (!yetkiVarMi) return; //güvenlik kontrolü
 
         String baslik = txtBaslik.getText();
         String aciklama = txtAciklama.getText();
@@ -169,19 +194,22 @@ public class GunDetayController {
             alert.showAndWait();
             return;
         }
-
+        // HANGİ BİRİME kaydedeceğiz
         BirimUyesi aktifUye = SessionManager.getInstance().getCurrentUser();
         int hedefBirimId = 0;
 
         if (aktifUye != null) {
             if (aktifUye.getBirimId() == 1) {
+                //topluluk başkanı ise
                 hedefBirimId = rbSosyal.isSelected() ? 3 : 2;
             } else {
+                //birim başkanı ise kendi idsi
                 hedefBirimId = aktifUye.getBirimId();
             }
         }
-
+       //veri tabanına kaydet
         gorevDAO.gorevEkle(baslik, aciklama, secilenTarih.toString(), "Gorev", hedefBirimId);
+        //pencereyi kapat
         Stage stage = (Stage) txtBaslik.getScene().getWindow();
         stage.close();
     }

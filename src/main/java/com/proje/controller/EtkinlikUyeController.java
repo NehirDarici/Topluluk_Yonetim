@@ -22,7 +22,7 @@ public class EtkinlikUyeController {
         System.out.println("✅ Etkinlik Üye Ekranı Başarıyla Yüklendi!");
     }
 
-    // --- TAKVİM BUTONU ---
+    // TAKVİM BUTONU
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
         System.out.println("Etkinlik Üye: Takvim sadece görüntüleme modunda açılıyor...");
@@ -34,37 +34,38 @@ public class EtkinlikUyeController {
         sayfaGetir("sayfa_todo.fxml");
     }
 
-    // --- SAYFA GETİRME MOTORU ---
+    // SAYFA GETİRME MOTORU
     private void sayfaGetir(String dosyaAdi) {
         try {
-            // Dosyayı yükle
+            // fxml dosyasını yükle
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
             Pane view = loader.load();
 
             if (anaIcerik != null) {
-                // Mevcut içeriği temizle ve yenisini ekle
+                // Mevcut içeriği temizle
                 anaIcerik.getChildren().clear();
+                //ve yenisini ekle
                 anaIcerik.getChildren().add(view);
             } else {
+                // Eğer FXML dosyasında fx:id vermeyi unuttuysan burası seni uyarır.
                 System.out.println("HATA: 'anaIcerik' StackPane bulunamadı. FXML'de fx:id kontrol et!");
             }
         } catch (IOException e) {
+            //dosya adı yanlışsa çalışır
             System.out.println("HATA: " + dosyaAdi + " yüklenemedi!");
             e.printStackTrace();
         }
-    }
-
-    @FXML
-    void btnDosyalarTiklandi(ActionEvent event) {
-        System.out.println("Etkinlik Üye: Dosya işlemleri butonuna basıldı.");
     }
 
     // Çıkış yap metodu (Diğer sayfalarla uyumlu olması için düzeltildi)
     @FXML
     void btnCikisYap(ActionEvent event) {
         try {
+            //login sayfasını hazırla
             Parent loginPage = FXMLLoader.load(getClass().getResource("/login.fxml"));
+            //şu anki pencereyi yakala
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            //görüntüyü değiştir
             stage.setScene(new Scene(loginPage));
             stage.show();
         } catch (IOException e) {

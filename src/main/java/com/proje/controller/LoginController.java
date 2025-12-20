@@ -14,41 +14,61 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
+//VERİTABANI KONTROLÜ YAPAR
+//SAYFA YÖNLENDİRMESİ YAPAR
 public class LoginController {
+    // FXML dosyasındaki kutucukları Java'ya tanıtıyoruz
 
-    @FXML private TextField emailAlan;
-    @FXML private PasswordField sifreAlan;
+    @FXML private TextField emailAlan; //ogrenci no girilen kısım
+    @FXML private PasswordField sifreAlan;  //sifre girilen kutu
     @FXML private Label lblDurum; // Kullanılmıyor ama FXML hatası vermesin diye duruyor
+
+
+    //veritabanı işlemleri için yardımcımızı çağırıyoruz
 
     private UserDAO userDAO = new UserDAO();
 
-    // --- GİRİŞ YAP BUTONU (AYNI KALIYOR) ---
+    // GİRİŞ YAP BUTONU
+    //kullanıcı butona bastığında burası çalışır
     @FXML
     protected void girisYap(ActionEvent event) {
+
+        //kutulardaki yazıları al ve boşluklarını temizle
         String ogrenciNo = emailAlan.getText().trim();
         String sifre = sifreAlan.getText().trim();
 
+        //eski hata mesajı varsa temizle
         if (lblDurum != null) lblDurum.setText("");
-
+        //kutular boş mu?
         if (ogrenciNo.isEmpty() || sifre.isEmpty()) {
+            //boşsa uyarı penceresi açılır
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Uyarı");
             alert.setHeaderText(null);
             alert.setContentText("Lütfen öğrenci numarası ve şifre giriniz.");
             alert.showAndWait();
-            return;
+            return; // kodun devamını çalıştırma burada dur
         }
 
         System.out.println("Giriş Deneniyor: " + ogrenciNo);
+
+        //VERİTABANI KONTROLÜ
+        //Userdaoya soruyoruz : Bu numaralı ve şifreli biri var mı?
         BirimUyesi girisYapan = userDAO.loginUser(ogrenciNo, sifre);
 
+        //Böyle birisi var mı
         if (girisYapan != null) {
+            // SessionManager: Kullanıcıyı uygulamanın hafızasına kaydet
             SessionManager.getInstance().login(girisYapan);
+
+            // Kullanıcının rolüne göre gideceği sayfayı bul
             String hedefDosya = hedefSayfayiBelirle(girisYapan);
+            //o sayfaya git
             if (hedefDosya != null) {
                 sayfaDegistir(event, hedefDosya);
             }
         } else {
+            // giriş başarısız
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Hata");
             alert.setHeaderText("Giriş Başarısız");
@@ -57,29 +77,36 @@ public class LoginController {
         }
     }
 
+    //kullanıcının kim olduğuna bakıp hangi sayfaya gideceğine karar verir
+
     private String hedefSayfayiBelirle(BirimUyesi user) {
-        String rol = user.getRol();
+        String rol = user.getRol(); //or baskan
         int birimId = user.getBirimId();
 
+        //topluluk başkanı
         if ("topluluk_baskani".equalsIgnoreCase(rol)) return "baskan_ekrani.fxml";
+
+        //birim başkanları
         else if ("baskan".equalsIgnoreCase(rol)) {
             return (birimId == 2) ? "etkinlik_baskan.fxml" : (birimId == 3) ? "sosyal_baskan.fxml" : "baskan_ekrani.fxml";
+
+            //normal üyeler
         } else {
             return (birimId == 2) ? "etkinlik_uye.fxml" : (birimId == 3) ? "sosyal_uye.fxml" : "baskan_ekrani.fxml";
         }
     }
 
-    // -------------------------------------------------------------
-    // --- GÜNCELLENEN POP-UP VE VALIDASYON MANTIĞI ---
-    // -------------------------------------------------------------
+
+    // şifremi unuttum alanı
     @FXML
     void btnSifremiUnuttumTiklandi(ActionEvent event) {
-        // 1. Sadece E-Posta İstiyoruz
+        // Sadece E-Posta İstenen küçük pencere aç
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Şifre Sıfırlama");
         dialog.setHeaderText("Şifre Yenileme");
         dialog.setContentText("Lütfen kayıtlı e-posta adresinizi giriniz:");
 
+        //kullanıcının cevabını vermesini bekle
         Optional<String> sonuc = dialog.showAndWait();
 
         if (sonuc.isPresent()) {
@@ -98,7 +125,7 @@ public class LoginController {
             }
 
             try {
-                // PDF TEKNİK ŞARTLARI
+
                 mailGonderimSimulasyonu(girilenMail);
 
                 // HER ŞEY TAMAMSA BAŞARI MESAJI
@@ -126,30 +153,26 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    /**
-     * PDF TEKNİK GEREKSİNİMLERİ
-     * - do-while
-     * - switch-case
-     * - Exception handling
-     */
+    //bu metot gerçekte mail atmaz ama ileride eklenecek kısım
+
     private void mailGonderimSimulasyonu(String mail) throws Exception {
 
-        // PDF Madde 3: Exception Fırlatma (Ekstra güvenlik)
+        //eğer mailde @yoksa hata verir
         if (!mail.contains("@")) {
             throw new IllegalArgumentException("Mail formatı bozuk!");
         }
 
         try {
-            // PDF Madde 9: do-while Döngüsü
+           // bu kısımda sunucuya bağlanıyormuşuz gibi yapıyoruz
             int deneme = 0;
             boolean baglandi = false;
             do {
                 deneme++;
-                if(deneme >= 1) baglandi = true;
+                if(deneme >= 1) baglandi = true; //ilk denemede bağlanmış gibi yap
             } while (!baglandi && deneme < 3);
 
-            // PDF Madde 9: switch-case Yapısı
-            // Mail uzantısına (Domain) göre sunucu seçimi yapıyoruz
+
+            // Mail uzantısına  göre sunucu seçimi yapıyoruz
             String uzanti = mail.substring(mail.indexOf("@") + 1).toLowerCase(); // @'den sonrasını al
             String sunucuTuru;
 
@@ -172,22 +195,27 @@ public class LoginController {
             System.out.println(sunucuTuru + " üzerinden gönderiliyor: " + mail);
 
         } catch (Exception e) {
-            // PDF Madde 7: Hata yakalama
+            // olası bağlanma hatasında mesaj atıyoruz
             throw new Exception("Bağlantı hatası oluştu.");
         }
     }
 
-    // --- DİĞER STANDART METOTLAR ---
+    // UYGULAMAYI  KAPAT
     @FXML
     void btnCikisYapTiklandi(ActionEvent event) {
-        System.exit(0);
+        System.exit(0);  //programı durdurur
     }
+
+    //kod tekrarı olmasın diye sayfalar arası geçişi buraya yazdık
 
     private void sayfaDegistir(ActionEvent event, String dosyaAdi) {
         try {
+            //dosya yolu düzeltmesi
             if (!dosyaAdi.startsWith("/")) dosyaAdi = "/" + dosyaAdi;
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(dosyaAdi));
             Parent root = fxmlLoader.load();
+            //mevcut pencereyi bul ve sahnesini değiştir
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

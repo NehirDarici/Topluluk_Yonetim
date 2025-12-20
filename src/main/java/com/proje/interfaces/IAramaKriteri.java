@@ -1,8 +1,13 @@
 package com.proje.interfaces;
 
-// PDF Madde 4.3: Interface Kullanımı
-// PDF Madde 5.1: Generic Kullanımı (<T>)
+//isme göre arama metodu
+//soyisme göre arama metodu
+//numaraya göre arama metodu
+
+//<T> Üye, Etkinlik vs... kullanım alanının arttırır
+
 public interface IAramaKriteri<T> {
-    // Bu metot, bir nesnenin aranan kelimeye uyup uymadığını kontrol edecek
+    //ınterface soru sorar , nasıl olacağınını interfaceyi kullanan sınıflar yazar
+
     boolean uygunMu(T veri, String arananKelime);
 }

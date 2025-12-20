@@ -15,21 +15,26 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * PDF Madde 1.1: Alt Sınıf
+ Etkinlik birim başkanı giriş yaptığında çalışan kısımdır
  */
 public class EtkinlikBaskanController {
 
+    //ortadaki boş alana, bütün alt sınıflar buraya yüklenir
     @FXML
     private StackPane anaIcerik; // FXML'deki fx:id="anaIcerik"
 
-    // PDF Madde 10: Yardımcı yapıların kullanımı
+    // sayı sayma işlemleri için bunu çağırırız
+
     private BirimServisi birimServisi = new BirimServisi();
 
+
+    //sayfa ilk açıldığında çalışan metot
     @FXML
     public void initialize() {
         System.out.println("✅ Etkinlik Başkanı Paneli Yüklendi!");
     }
-
+    //MENÜ BUTONLARI
+    //ortadaki alana yükleme yaparlar
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
         sayfaGetir("sayfa_takvim.fxml");
@@ -48,29 +53,27 @@ public class EtkinlikBaskanController {
         sayfaGetir("sayfa_uyeler.fxml");
     }
 
+
+    //SONRADAN EKLENECEK KISIM
     @FXML
     void btnDosyalarTiklandi(ActionEvent event) {
-        // PDF Madde 5, 8 ve 9 gereksinimlerini burada tetikliyoruz
         System.out.println("--- Teknik Gereksinimler Çalıştırılıyor ---");
 
         try {
-            // 1. PDF Madde 8: Dosyaya yazma (I/O)
             DosyaIslemleri.logEkle("Etkinlik Başkanı dosya işlemlerini başlattı.");
 
-            // 2. PDF Madde 9: Çok boyutlu diziden veri çekme
+            // Çok boyutlu diziden veri çekme
             int oda = birimServisi.odaBul(2); // 2: Etkinlik Birimi
             System.out.println("Birim Lokasyonu (2D Array): Oda " + oda);
 
-            // 3. PDF Madde 5.1: Wildcard (List<?>) kullanımı
             // Görev listesini generic metoda gönderip eleman sayısını raporluyoruz
             GorevDAO dao = new GorevDAO();
             birimServisi.elemanSayisiniRaporla(dao.getTumGorevler());
 
-            // 4. PDF Madde 8: Scanner ile log okuma testi
+            // log okuma testi
             DosyaIslemleri.loglariOku();
 
         } catch (IOException e) {
-            // PDF Madde 7: Hata yönetimi
             System.err.println("Dosya işlemleri sırasında hata: " + e.getMessage());
         }
 
@@ -78,13 +81,19 @@ public class EtkinlikBaskanController {
         sayfaGetir("sayfa_dosyalar.fxml");
     }
 
+
+    // Her buton için ayrı ayrı "FXMLLoader..." yazmak yerine, dosya adını veriyoruz, o yüklüyor.
+
     private void sayfaGetir(String dosyaAdi) {
         try {
+            //Yyeni sayfayı hafızaya yükler
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + dosyaAdi));
-            Pane view = loader.load();
+            Pane view = loader.load(); //yüklenen görüntü
+
+            //ortadaki alanı temizle ve yeni görüntü ekle
             if (anaIcerik != null) {
-                anaIcerik.getChildren().clear();
-                anaIcerik.getChildren().add(view);
+                anaIcerik.getChildren().clear();  //eskiyi sil
+                anaIcerik.getChildren().add(view); //yeniyi ekle
             }
         } catch (IOException e) {
             System.err.println("HATA: " + dosyaAdi + " yüklenemedi!");
@@ -92,12 +101,23 @@ public class EtkinlikBaskanController {
         }
     }
 
+
+    //ÇIKIŞ YAP
+    //neden try-catch--> eğer dosya bulunamazsa çökmesin hatayı ekrana yazsın
+
+    // Daha önce öğrendiğimiz metot. Pencereyi (Stage) bulup sahneyi (Scene) Login ile değiştirir.
+    //Mevcut pencereyi kapatmadan, içindeki görüntüyü söküp yerine Giriş Ekranını (Login) takar
     @FXML
     void btnCikisYap(ActionEvent event) {
         try {
+            //eventgetSource--> butonu bul
+            //.getScene butonun olduğu resme bak
+            //getwindow o resmin takılı olduğu çerçeveyi al
             Parent loginPage = FXMLLoader.load(getClass().getResource("/login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            //login sayfasını yerleştir
             stage.setScene(new Scene(loginPage));
+            //çerçeveyi tekrardan göster
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
