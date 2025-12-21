@@ -1,25 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.SosyalUyeController">
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.proje.controller.SosyalUyeController">
+
+    <!-- SOL MENÜ -->
     <left>
-        <VBox prefHeight="200.0" prefWidth="170.0" style="-fx-background-color: #2D3447;" BorderPane.alignment="CENTER">
+        <VBox prefHeight="600.0" prefWidth="220.0" spacing="10.0" style="-fx-background-color: #2D3447;" BorderPane.alignment="CENTER">
             <children>
-                <Region prefHeight="85.0" prefWidth="170.0" />
-                <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnTakvimTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Takvim" />
 
-                <!-- DÜZELTME BURADA YAPILDI: btnToDoTiklandi olarak değiştirildi -->
-                <Button layoutX="10.0" layoutY="63.0" mnemonicParsing="false" onAction="#btnToDoTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="To-Do List" />
+                <!-- BAŞLIK ALANI -->
+                <VBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0">
+                    <children>
+                        <Label text="SOSYAL MEDYA" textFill="WHITE">
+                            <font>
+                                <Font name="Segoe UI Bold" size="18.0" />
+                            </font>
+                        </Label>
+                        <Separator opacity="0.1" prefWidth="200.0" />
+                    </children>
+                </VBox>
 
-                <Region prefHeight="317.0" prefWidth="170.0" />
-                <Button layoutX="10.0" layoutY="116.0" mnemonicParsing="false" onAction="#btnCikisYap" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: red; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Çıkış Yap" textFill="#262525" />
-                <Button layoutX="10.0" layoutY="170.0" mnemonicParsing="false" onAction="#btnDosyalarTiklandi" prefWidth="170.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-width: 0px 0px 1px 0px;" text="Sosyal Medya Üye" />
+                <!-- MENÜ BUTONLARI -->
+                <VBox spacing="5.0">
+                    <children>
+                        <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnTakvimTiklandi" prefHeight="45.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="📅   Takvim" textFill="#dddddd">
+                            <font>
+                                <Font name="Segoe UI" size="14.0" />
+                            </font>
+                            <padding>
+                                <Insets left="30.0" />
+                            </padding>
+                        </Button>
+
+                        <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnToDoTiklandi" prefHeight="45.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="📝   To-Do List" textFill="#dddddd">
+                            <font>
+                                <Font name="Segoe UI" size="14.0" />
+                            </font>
+                            <padding>
+                                <Insets left="30.0" />
+                            </padding>
+                        </Button>
+                    </children>
+                </VBox>
+
+                <!-- BOŞLUK DOLDURUCU -->
+                <Region VBox.vgrow="ALWAYS" />
+
+                <!-- ALT PROFİL VE ÇIKIŞ ALANI -->
+                <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: #232938;">
+                    <padding>
+                        <Insets bottom="20.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <Label text="Aktif Kullanıcı" textFill="#8c90b3">
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
+                        <Label text="SOSYAL MEDYA ÜYE" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#btnCikisYap" style="-fx-background-color: #ff5e5e; -fx-background-radius: 20; -fx-cursor: hand;" text="Çıkış Yap" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <padding>
+                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                            </padding>
+                            <VBox.margin>
+                                <Insets top="10.0" />
+                            </VBox.margin>
+                        </Button>
+                    </children>
+                </VBox>
             </children>
         </VBox>
     </left>
+
+    <!-- ORTA ALAN -->
     <center>
-        <BorderPane fx:id="anaIcerik" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+        <!-- Controller sınıfında BorderPane tanımlı olduğu için BorderPane bırakıldı -->
+        <BorderPane fx:id="anaIcerik" prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #F4F4F4;" BorderPane.alignment="CENTER" />
     </center>
+
 </BorderPane>

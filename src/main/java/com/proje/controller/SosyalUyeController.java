@@ -8,35 +8,28 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
 
 public class SosyalUyeController {
 
-    // FXML'deki merkez alanının tipi BorderPane olduğu için tipi BorderPane yaptık.
     @FXML
     private BorderPane anaIcerik;
 
-
-    // Controller çalıştığında bu mesajı verecek metod
     @FXML
     public void initialize() {
         System.out.println("✅ Sosyal Medya Üye Ekranı Yüklendi!");
     }
 
-    // Takvim butonuna tıklandığında takvim sayfasını aynı ekrana getirir.
     @FXML
     void btnTakvimTiklandi(ActionEvent event) {
         sayfaGetir("sayfa_takvim.fxml");
     }
 
-    // To-do list butonuna tıklandığında çalışır. Aynı zamanda sisteme log olarak kaydedilir.
     @FXML
     void btnToDoTiklandi(ActionEvent event) {
         try {
-            DosyaIslemleri.logEkle("Sosyal Medya Başkanı birim To-Do listesini görüntüledi.");
-
+            DosyaIslemleri.logEkle("Sosyal Medya Üyesi birim To-Do listesini görüntüledi.");
             System.out.println("To-Do Listesi açılıyor...");
             sayfaGetir("sayfa_todo.fxml");
         } catch (IOException e) {
@@ -44,14 +37,33 @@ public class SosyalUyeController {
         }
     }
 
-    // Verilen FXML dosyasını yükler.
+    // ---------------------------------------------------------
+    // EKLENEN KISIM: Hata veren eksik metot buraya eklendi
+    // ---------------------------------------------------------
+    @FXML
+    void btnDosyalarTiklandi(ActionEvent event) {
+        try {
+            // İsteğe bağlı log ekleme (Diğer butonlardaki yapıya uygun olarak)
+            DosyaIslemleri.logEkle("Sosyal Medya Üyesi dosyalar sayfasını görüntüledi.");
+
+            System.out.println("Dosyalar sayfası açılıyor...");
+
+            // BURAYA DİKKAT: Eğer dosyalar için hazırladığın bir .fxml dosyası varsa
+            // ismini aşağıya yazmalısın. Şimdilik hata vermemesi için boş bıraktım
+            // veya örnek bir isim yazdım. Kendi dosya isminle değiştirebilirsin.
+
+            // sayfaGetir("sayfa_dosyalar.fxml"); // <-- Dosya ismini buraya yazıp baştaki // işaretlerini kaldır.
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // ---------------------------------------------------------
+
     private void sayfaGetir(String dosyaAdi) {
         try {
-            // Kaynak dosyanın yolunu belirleme
             String path = dosyaAdi.startsWith("/") ? dosyaAdi : "/" + dosyaAdi;
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-
-            // Pane yerine Parent olarak yüklemek daha güvenlidir
             Parent view = loader.load();
 
             if (anaIcerik != null) {
@@ -65,7 +77,6 @@ public class SosyalUyeController {
         }
     }
 
-    //Çıkış yap butonuna tıklandığında login ekranına döner.
     @FXML
     void btnCikisYap(ActionEvent event) {
         try {

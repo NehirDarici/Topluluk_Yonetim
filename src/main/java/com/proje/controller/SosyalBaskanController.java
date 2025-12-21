@@ -12,7 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-//Bu sınıf, sosyal medya başkanının sayfasındaki menü geçişlerini, takvim ve to-do list araçlara erişimini ve log işlemlerini yapar*/
+// Bu sınıf, sosyal medya başkanının sayfasındaki menü geçişlerini, takvim ve to-do list araçlara erişimini ve log işlemlerini yapar
 
 public class SosyalBaskanController {
 
@@ -45,12 +45,29 @@ public class SosyalBaskanController {
         }
     }
 
+    // -----------------------------------------------------------------------
+    // EKLENEN KISIM: Hata veren eksik metot buraya eklendi
+    // -----------------------------------------------------------------------
+    @FXML
+    void btnDosyalarTiklandi(ActionEvent event) {
+        try {
+            DosyaIslemleri.logEkle("Sosyal Medya Başkanı dosyalar sayfasını görüntüledi.");
+            System.out.println("Dosyalar sayfası açılıyor...");
+
+            // Dosyalar sayfası FXML dosyanızın adı neyse aşağıya yazıp yorum satırını kaldırabilirsiniz.
+            // sayfaGetir("sayfa_dosyalar.fxml");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // -----------------------------------------------------------------------
+
     // Birime bağlı üyelerin olduğu sayfayı açar.
     @FXML
     void btnUyelerTiklandi(ActionEvent event) {
         sayfaGetir("sayfa_uyeler.fxml");
     }
-
 
     // Verilen FXML dosyasını yükler.
     private void sayfaGetir(String dosyaAdi) {
@@ -78,7 +95,7 @@ public class SosyalBaskanController {
         cikisIslemi(event);
     }
 
-    //Çıkış yapar ve login ekranına döndürür.
+    // Çıkış yapar ve login ekranına döndürür.
     private void cikisIslemi(ActionEvent event) {
         try {
             Parent loginPage = FXMLLoader.load(getClass().getResource("/login.fxml"));

@@ -31,3 +31,27 @@
 [19-12-2025 16:05:45] Etkinlik Başkanı dosya işlemlerini başlattı.
 [19-12-2025 17:29:38] Sosyal Medya Üyesi oturumu kapattı.
 [19-12-2025 17:29:48] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[21-12-2025 12:28:34] Sosyal Medya Üyesi birim To-Do listesini görüntüledi.
+[21-12-2025 12:28:36] Sosyal Medya Üyesi oturumu kapattı.
+[21-12-2025 12:30:52] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[21-12-2025 12:39:02] Sosyal Medya Üyesi oturumu kapattı.
+[21-12-2025 12:52:06] Etkinlik Başkanı dosya işlemlerini başlattı.
+[21-12-2025 12:52:07] Etkinlik Başkanı dosya işlemlerini başlattı.
+[21-12-2025 12:52:07] Etkinlik Başkanı dosya işlemlerini başlattı.
+[21-12-2025 12:52:07] Etkinlik Başkanı dosya işlemlerini başlattı.
+[21-12-2025 12:52:39] Sosyal Medya Üyesi dosyalar sayfasını görüntüledi.
+[21-12-2025 12:52:39] Sosyal Medya Üyesi birim To-Do listesini görüntüledi.
+[21-12-2025 12:52:41] Sosyal Medya Üyesi oturumu kapattı.
+[21-12-2025 12:52:52] Sosyal Medya Başkanı dosyalar sayfasını görüntüledi.
+[21-12-2025 12:52:53] Sosyal Medya Başkanı dosyalar sayfasını görüntüledi.
+[21-12-2025 12:52:54] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[21-12-2025 13:22:39] Nehir Yılmaz [topluluk_baskani] bir görev ekledi: Toplantı yapılacak
+[21-12-2025 13:23:26] Nehir Yılmaz [topluluk_baskani] bir görevi sildi.
+[21-12-2025 13:40:56] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[21-12-2025 13:40:57] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[21-12-2025 14:40:08] Sosyal Medya Üyesi oturumu kapattı.
+[21-12-2025 14:41:25] Sosyal Medya Başkanı birim To-Do listesini görüntüledi.
+[21-12-2025 14:45:36] Nehir Yılmaz [topluluk_baskani] bir görev ekledi: Eklenen görev
+[21-12-2025 14:46:59] Zeynep Yılmaz [baskan] bir görev ekledi: Danışman hocayla görüşme ayarlanacak
+[21-12-2025 14:47:27] Zeynep Yılmaz [baskan] bir görevi sildi.
+[21-12-2025 14:48:39] Zeynep Yılmaz [baskan] bir görev ekledi: Danışman hocayla görüşme ayarlanacak
