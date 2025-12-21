@@ -22,7 +22,7 @@ public class SessionManager {
         return instance;
     }
 
-    // 4. Kullanıcı giriş yapınca bu metot çağrılır.
+    // Kullanıcı giriş yapınca bu metot çağrılır.
     public void login(BirimUyesi user) {
         this.currentUser = user;
         System.out.println("OTURUM AÇILDI: " + user.getAdSoyad() + " (" + user.getRol() + ")");

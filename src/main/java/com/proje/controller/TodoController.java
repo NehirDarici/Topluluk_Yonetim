@@ -141,7 +141,6 @@ public class TodoController implements Initializable {
             boolean sonuc = dao.gorevEkle(formatliBaslik, "Birim To-Do Görevi", tarihStr, "To-Do", aktifUye.getBirimId());
 
             if (sonuc) {
-                // PDF Madde 8: Loglama
                 try {
                     DosyaIslemleri.logEkle(aktifUye.getAdSoyad() + " [" + aktifUye.getRol() + "] bir görev ekledi: " + formatliBaslik);
                 } catch (IOException e) {
@@ -161,6 +160,7 @@ public class TodoController implements Initializable {
         }
     }
 
+    // Seçili görevi silme metodu
     @FXML
     void btnSil(ActionEvent event) {
         TakvimOlayi secilen = listeGorevler.getSelectionModel().getSelectedItem();

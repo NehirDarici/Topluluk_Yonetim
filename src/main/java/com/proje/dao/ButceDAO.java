@@ -60,7 +60,7 @@ public class ButceDAO {
         }
     }
 
-    // Silme metoodu
+    // Silme metodu
     public boolean sil(int id) {
         String sql = "DELETE FROM Butce WHERE id = ?";
         try (Connection conn = DBHelper.baglan();

@@ -45,9 +45,7 @@ public class SosyalBaskanController {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // EKLENEN KISIM: Hata veren eksik metot buraya eklendi
-    // -----------------------------------------------------------------------
+   // Dosyaların açılmasını sağlayan metod
     @FXML
     void btnDosyalarTiklandi(ActionEvent event) {
         try {
@@ -61,7 +59,7 @@ public class SosyalBaskanController {
             e.printStackTrace();
         }
     }
-    // -----------------------------------------------------------------------
+
 
     // Birime bağlı üyelerin olduğu sayfayı açar.
     @FXML

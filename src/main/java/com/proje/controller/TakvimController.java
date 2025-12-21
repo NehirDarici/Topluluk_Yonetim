@@ -67,6 +67,7 @@ public class TakvimController {
      * Ayrıca veritabanından o aya ait görevleri çekip ilgili günün içine yerleştirir.
      */
 
+    // Takvimin oluşmasını sağlayan metod
     private void takvimiCiz() {
         if (takvimGrid == null) return;
 

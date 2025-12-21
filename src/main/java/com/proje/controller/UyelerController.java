@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent; // Klavye olaylarını yakalamak için
 import java.util.List;
 import java.util.Optional;
 
+// Üyelerin gösterildiği sınıftır.
 public class UyelerController {
 
     @FXML private TableView<BirimUyesi> tabloUyeler;
@@ -85,6 +86,7 @@ public class UyelerController {
         verileriGetir();
     }
 
+    // Üye silme metodu
     @FXML
     void btnSil(ActionEvent event) {
         BirimUyesi secilen = tabloUyeler.getSelectionModel().getSelectedItem();

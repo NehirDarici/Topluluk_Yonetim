@@ -99,7 +99,7 @@ public class DBHelper {
                 stmt.execute("INSERT INTO Kullanicilar (ogrenci_no, ad_soyad, sifre, rol, birim_id) VALUES ('20658912', 'Mehmet', '36', 'uye', 2)");
                 stmt.execute("INSERT INTO Kullanicilar (ogrenci_no, ad_soyad, sifre, rol, birim_id) VALUES ('2045', 'Hasan', '63', 'uye', 3)");
 
-                System.out.println("✅ Kullanıcılar ve Birimler başarıyla eklendi!");
+                System.out.println("✅ Tablolar başarıyla eklendi!");
             }
 
         } catch (SQLException e) {
